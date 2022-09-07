@@ -1,9 +1,14 @@
+
 //*--------------------------------------------------------------------------------
-//*--------------------------- BASE DE DONNEES MONGODB ----------------------------
+//*---------------------------------- LIBRAIRIE -----------------------------------
 //*--------------------------------------------------------------------------------
 
 //* IMPORT LIBRAIRIE MONGOOSE
 const mongoose = require('mongoose')
+
+//*--------------------------------------------------------------------------------
+//*--------------------------- BASE DE DONNEES MONGODB ----------------------------
+//*--------------------------------------------------------------------------------
 
 //* VARIABLES D'ENVIRONEMENTS
 const password = process.env.MONGODB_PASSWORD
@@ -14,9 +19,9 @@ const uri = `mongodb+srv://${login}:${password}@sauces.erngyxz.mongodb.net/?retr
 
 //* RESUTAT CONNEXION A MONGODB
 mongoose
-.connect(uri)
-.then(() => console.log('Connexion à MongoDB réussie !'))
-.catch((err) => console.error('Connexion à MongoDB échouée !' + err))
+  .connect(uri)
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch((err) => console.error('Connexion à MongoDB échouée !' + err))
 
 //* EXPORT
 module.exports = { mongoose }

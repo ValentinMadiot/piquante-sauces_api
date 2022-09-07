@@ -12,58 +12,66 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
 //*--------------------------------------------------------------------------------
-//*----------------------- FONCTION CONNECTION UTILISATEUR ------------------------
+//*---------------------------- CONTROLLER UTILISATEUR ----------------------------
 //*--------------------------------------------------------------------------------
 
-//* FONCTION pour CREER un nouvel utilisateur
-async function signup(req, res) {
-  try {
-    // console.log("SignUp request", req.body)
-    // console.log('res', res.send);
-    const {email, password} = req.body
-    const hashedPassword = await hashPassword(password)
-    // console.log("password:", password)
-    // console.log('hashedPassword', hashedPassword)
-    const user = new User({ email, password: hashedPassword })
-    await user.save()
-    res.status(201).send({ message: "Utilisateur enrengistré !" })
-  } catch (error) {
-  res.status(409).send({ message: "Utilisateur non enrengistré !" + error })  
-  }
+//* CREER UN NOUVEL UTILISATEUR
+function signup (req, res, next) {
+  //* HASHER LE PASSWORD 10 FOIS AVEC BYCRYPT
+  bcrypt.hash(req.body.password, 10)
+    //* TRANSMETTRE LE MAIL ET MDP A UN OBJET UTILISATEUR
+    .then(hash => {
+      //* CREER UN NOUVEL UTILISATEUR
+      const user = new User({
+      //* EMAIL DE LA REQUÊTE
+      email: req.body.email,
+      //* MDP HASHER
+      password: hash
+      })
+      //* SAUVEGARDE DANS LA DATABASE AVEC LA METHODE ".save"
+      user.save()
+        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+        .catch(error => res.status(500).json({ error }))
+    })
+    .catch(error => res.status(501).json({ error }))
 }
 
-//* FONCTION pour HASHER le MDP 10 fois avec BCRYPT
-function hashPassword(password) {
-  const saltRounds = 10
-  return bcrypt.hash(password, saltRounds) 
-}
+//?--------------------------------------------------------------------------------
 
-//* FONCTION pour CONNECTER un utilisateur existant
-async function login(req, res) {
-  try {
-    const {email, password} = req.body
-    const user = await User.findOne({ email: email })
-    const isPasswordOk = await bcrypt.compare(password, user.password)
-    if (!isPasswordOk) {
-      res.status(403).send({ message: 'Mot de passe incorrect'})
-    } else {
-      const token = createToken(user)
-      res.status(200).send({ userId: user?._id, token: token})
-    }
-    // console.log('user', user)
-    // console.log('isPasswordOk', isPasswordOk)
-  } catch (error) {
-    console.log(error)
-    res.status(500).send({ message: "Erreur interne" })
-  }
-}
-
-//* FONCTION pour CREER un TOKEN qui EXPIRE après 24h
-function createToken(user) {
-  const jwtToken = process.env.JWT_TOKEN
-  return jwt.sign({ email: user.email, userId: user._id }, jwtToken, { expiresIn: "24h" })
+//* CONNECTER UN UTILISATEUR EXISTANT
+function login (req, res, next) {
+  //* CHERCHER EMAIL DE L'UTILISATERUR DANS LA DATABASE AVEC LA METHODE ".findOne"
+  User.findOne({ email: req.body.email })
+    .then(user => {
+      if (user === null) {
+        //* SI AUCUNE CORRESPONDANCE, ECHEC DE CONNEXION ET ON RENVOI UN MSG
+        res.status(401).json({ message: 'L’adresse e-mail que vous avez saisie n’est associée à aucun compte' })
+      } else {
+        //* SINON ON COMPARE LE MDP DONNEES AVEC CELUI DE LA DATABASE AVEC LA METHODE ".compare" DE BYCRYPT
+        bcrypt.compare(req.body.password, user.password)
+          .then(valid => {
+            if (!valid) {
+              //* SI IL EST INVALIDE, ECHEC DE LA CONNEXION (401)
+              res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' })
+            } else {
+              //* SINON IL EST VALIDE, POURSUIT LA CONNEXION (201) 
+              res.status(200).json({
+                userId: user._id,
+                //* ENVOI UN TOKEN D'AUTHENTIFICATION AVEC LA METHODE ".sign" DE JASONWEBTOKEN
+                token: jwt.sign(
+                  //* ARGUMENTS : userId, token dans ".env", durée de validité
+                  { userId: user._id },
+                  process.env.JWT_TOKEN,
+                  { expiresIn: '24h' }
+                )
+              })
+            }
+          })
+          .catch(error => res.status(500).json({ error }))
+      }
+    })
+    .catch(error => res.status(501).json({ error }))
 }
 
 //* EXPORT DONNEES
 module.exports = { signup, login }
-

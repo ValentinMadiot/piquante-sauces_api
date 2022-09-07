@@ -18,25 +18,25 @@ const { getAllSauces, createSauce, getOneSauce, modifySauce, deleteSauce, likeDi
 const router = express.Router()
 
 //*--------------------------------------------------------------------------------
-//*------------------------------------ ROUTES ------------------------------------
+//*-------------------------------- ROUTES SAUCES ---------------------------------
 //*--------------------------------------------------------------------------------
 
-//* POST UNE CREATION D'OBJET D'UN CLIENT
+//* POST UNE CREATION DE SAUCE D'UN CLIENT
 router.post('/api/sauces', auth, multer, createSauce)
 
-//* PUBLI LES DONNEES DE CHAQUE PRODUITS SUR LA PAGE D'ACCUEIL
+//* PUBLI LES DONNEES DE CHAQUE SAUCES SUR LA PAGE ALL SAUCES
 router.get('/api/sauces', auth, getAllSauces)
 
-//* PUBLI LES DONNEES DU PRODUIT SUR LA PAGE PRODUIT
+//* PUBLI LES DONNEES D'UNE SAUCE SUR SA PAGE
 router.get('/api/sauces/:id', auth, getOneSauce)
 
-//* MODIFICATION D'UN PRODUIT DU CLIENT
+//* MODIFIE UNE SAUCE DU CLIENT
 router.put('/api/sauces/:id', auth, multer, modifySauce)
 
-//* SUPPRESSION D'UN PRODUIT DU CLIENT
+//* SUPPRIME UNE SAUCE DU CLIENT
 router.delete('/api/sauces/:id', auth, deleteSauce)
 
-//* LIKER OU DISLIKER UN PRODUIT CLIENT
+//* LIKER OU DISLIKER UNE SAUCE CLIENT
 router.post('/api/sauces/:id/like', auth, likeDislikeSauce)
 
 //* EXPORTATION DES ROUTES
