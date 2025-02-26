@@ -14,13 +14,13 @@ normalizePort = (val) => {
 exports.port = normalizePort(process.env.PORT || "3000");
 
 //* "errorHandler" => RECHERCHE LES DIFFERENTES ERREURS ET LES GERES DE MANIERE APPROPRIEE
-exports.errorHandler = (error) => {
+exports.errorHandler = (server, error) => {
   if (error.syscall !== "listen") {
     throw error;
   }
   const address = server.address();
   const bind =
-    typeof address === "string" ? "pipe " + address : "port: " + port;
+    typeof address === "string" ? "pipe " + address : "port: " + exports.port; // Utilise exports.port ici
   switch (error.code) {
     case "EACCES":
       console.error(bind + " requires elevated privileges.");

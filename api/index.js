@@ -3,6 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
+const morgan = require("morgan");
+app.use(morgan("dev")); // Affiche les logs des requêtes HTTP
 
 //* IMPORT DATABASE
 require("./services/database");
@@ -33,13 +35,13 @@ app.use(cors(corsOptions));
 // Gère les requêtes preflight OPTIONS
 app.options("*", cors(corsOptions));
 
-//* HELMET => PROTEGE L'APPLICATION DE CERTAINES VULNERABILITES EN CONFIGURANT DE MANIERE APPROPRIEE DES HEADERS HTTP
-app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
+// //* HELMET => PROTEGE L'APPLICATION DE CERTAINES VULNERABILITES EN CONFIGURANT DE MANIERE APPROPRIEE DES HEADERS HTTP
+// app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
 
 //* PARSER => ANALYSE LE CORPS D'UNE REQUETE HTTP, ASSEMBLE LES DONNEES, CREE UN OBJET BODY EXPLOITABLE
 app.use(express.json());
 
-app.use(userRoute);
+app.use("/api", userRoute);
 app.use(sauceRoute);
 
 //! CHEMIN IMAGE
