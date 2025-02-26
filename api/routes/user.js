@@ -1,5 +1,6 @@
 const express = require("express");
 const { signup, login } = require("../controllers/user");
+const cors = require("cors");
 
 //* DECLARE ROUTER D'EXPRESS
 const router = express.Router();

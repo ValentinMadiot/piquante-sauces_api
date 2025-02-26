@@ -1,27 +1,25 @@
-
-//*--------------------------------------------------------------------------------
-//*---------------------------------- LIBRAIRIE -----------------------------------
-//*--------------------------------------------------------------------------------
-
 //* IMPORT LIBRAIRIE MONGOOSE
-const mongoose = require('mongoose')
-
-//*--------------------------------------------------------------------------------
-//*--------------------------- BASE DE DONNEES MONGODB ----------------------------
-//*--------------------------------------------------------------------------------
+const mongoose = require("mongoose");
 
 //* VARIABLES D'ENVIRONEMENTS
-const password = process.env.MONGODB_PASSWORD
-const login = process.env.MONGODB_LOGIN
+const login = process.env.MONGODB_LOGIN;
+const password = process.env.MONGODB_PASSWORD;
 
 //* CONNEXTION A LA BASE DE DONNEE MONGODB AVEC L'ADRESSE
-const uri = `mongodb+srv://${login}:${password}@sauces.erngyxz.mongodb.net/?retryWrites=true&w=majority`
+const uri = `mongodb+srv://${login}:${password}@user.rbdox.mongodb.net/?retryWrites=true&w=majority&appName=user`;
+
+if (!uri) {
+  console.error(
+    "❌ Erreur : MONGODB_LOGIN & MONGODB_PASSWORD non défini dans .env"
+  );
+  process.exit(1);
+}
 
 //* RESUTAT CONNEXION A MONGODB
 mongoose
-  .connect(uri)
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch((err) => console.error('Connexion à MongoDB échouée !' + err))
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ Connexion à MongoDB réussie !"))
+  .catch((err) => console.error("❌ Connexion à MongoDB échouée !", err));
 
 //* EXPORT
-module.exports = { mongoose }
+module.exports = { mongoose };

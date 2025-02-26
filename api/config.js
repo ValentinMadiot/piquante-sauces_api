@@ -11,7 +11,7 @@ normalizePort = (val) => {
   return false;
 };
 
-exports.port = normalizePort(process.env.PORT || "3000");
+exports.port = normalizePort(process.env.PORT || "5000");
 
 //* "errorHandler" => RECHERCHE LES DIFFERENTES ERREURS ET LES GERES DE MANIERE APPROPRIEE
 exports.errorHandler = (server, error) => {
