@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, mapTo, of, Subject, tap, throwError } from 'rxjs';
-import { environment } from 'src/app/environments/environment'; // Import de l'environnement
+import { environment } from 'src/app/environments/environment.prod'; // Import de l'environnement
 import { Sauce } from '../models/Sauce.model';
 import { AuthService } from './auth.service';
 
