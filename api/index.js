@@ -4,7 +4,6 @@ const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
 const morgan = require("morgan");
-app.use(morgan("dev")); // Affiche les logs des requêtes HTTP
 
 //* IMPORT DATABASE
 require("./services/database");
@@ -13,38 +12,44 @@ const { port, errorHandler } = require("./config");
 const userRoute = require("./routes/user");
 const sauceRoute = require("./routes/sauce");
 
-const app = express();
+const app = express(); // ✅ Déclare app AVANT de l'utiliser
+
+app.use(morgan("dev")); // Affiche les logs des requêtes HTTP
 
 app.on("error", errorHandler);
 app.on("listening", () => {
-  const address = app.address();
-  const bind = typeof address === "string" ? "pipe " + address : "port " + port;
-  console.log("Listening on " + bind);
+  console.log(`Listening on port ${port}`);
 });
 
-//* CORS CONFIGURATION
-app.use(
-  cors({
-    origin: "*", //"https://piquante-sauces.vercel.app"
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
-  })
-);
+//* Middleware pour ajouter les headers CORS sur toutes les réponses
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Mets ton domaine en prod
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200); // ✅ Évite l'erreur 405 sur preflight requests
+  }
+  next();
+});
 
-// Gère les requêtes OPTIONS (préflight)
-app.options("*", cors());
+app.use(cors()); // ✅ Active CORS
+app.use(helmet()); // ✅ Sécurise les headers HTTP
 
-// //* HELMET => PROTEGE L'APPLICATION DE CERTAINES VULNERABILITES EN CONFIGURANT DE MANIERE APPROPRIEE DES HEADERS HTTP
-// app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
-
-//* PARSER => ANALYSE LE CORPS D'UNE REQUETE HTTP, ASSEMBLE LES DONNEES, CREE UN OBJET BODY EXPLOITABLE
+//* PARSER => Analyse le corps des requêtes
 app.use(express.json());
 
+//* Routes
 app.use("/api", userRoute);
 app.use(sauceRoute);
 
 //! CHEMIN IMAGE
 app.use("/images", express.static(path.join(__dirname, "/images")));
 
-//! LANCEMENT SUR LE PORT
+//! LANCEMENT DU SERVEUR
 app.listen(port, () => console.log("Listening on port : " + port));
