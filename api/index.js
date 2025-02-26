@@ -18,7 +18,7 @@ const sauceRoute = require("./routes/sauce");
 
 //* Configuration CORS
 const corsOptions = {
-  origin: ["https://piquante-sauces.vercel.app", "http://localhost:4200"], // Ajoute localhost pour tester en local
+  origin: ["https://piquante-sauces.vercel.app", "http://localhost:4200"], // Localhost pour tester en local
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Permet d'envoyer des cookies ou headers d'authentification
   allowedHeaders: ["Content-Type", "Authorization"], // Autoriser ces headers
