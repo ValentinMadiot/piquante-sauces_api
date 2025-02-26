@@ -5,6 +5,10 @@ const helmet = require("helmet");
 const path = require("path");
 const morgan = require("morgan");
 
+const app = express();
+
+app.use(morgan("dev")); // Affiche les logs des requêtes HTTP
+
 //* IMPORT DATABASE
 require("./services/database");
 
@@ -12,44 +16,34 @@ const { port, errorHandler } = require("./config");
 const userRoute = require("./routes/user");
 const sauceRoute = require("./routes/sauce");
 
-const app = express(); // ✅ Déclare app AVANT de l'utiliser
+//* CORS CONFIGURATION (AVANT TOUT)
+app.use(
+  cors({
+    origin: "https://piquante-me5bryhmp-valentinmdts-projects.vercel.app", // Ton frontend
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders:
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+    credentials: true, // Active si besoin d’envoyer des cookies ou des headers d’authentification
+  })
+);
 
-app.use(morgan("dev")); // Affiche les logs des requêtes HTTP
+//* GÈRE LES REQUÊTES OPTIONS (PRE-FLIGHT)
+app.options("*", cors());
 
-app.on("error", errorHandler);
-app.on("listening", () => {
-  console.log(`Listening on port ${port}`);
-});
-
-//* Middleware pour ajouter les headers CORS sur toutes les réponses
+//* DEBUG : LOG DES HEADERS POUR VÉRIFICATION
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Mets ton domaine en prod
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // ✅ Évite l'erreur 405 sur preflight requests
-  }
+  console.log("CORS Headers:", res.getHeaders());
   next();
 });
 
-app.use(cors()); // ✅ Active CORS
-app.use(helmet()); // ✅ Sécurise les headers HTTP
-
-//* PARSER => Analyse le corps des requêtes
+//* PARSER => ANALYSE LE CORPS D'UNE REQUÊTE HTTP
 app.use(express.json());
 
-//* Routes
 app.use("/api", userRoute);
-app.use(sauceRoute);
+app.use("/api", sauceRoute);
 
 //! CHEMIN IMAGE
 app.use("/images", express.static(path.join(__dirname, "/images")));
 
-//! LANCEMENT DU SERVEUR
+//! LANCEMENT SUR LE PORT
 app.listen(port, () => console.log("Listening on port : " + port));
