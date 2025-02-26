@@ -3,20 +3,37 @@ const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
   try {
-    //* RECUPERER HEADER "Authorization" ET GARDER SEULEMENT LE TOKEN GRACE A LA METHODE ".split"
+    //* Vérifie si le header "Authorization" est présent
+    if (!req.headers.authorization) {
+      return res.status(401).json({ error: "Authorization header missing" });
+    }
+
+    //* Récupérer le token après "Bearer"
     const token = req.headers.authorization.split(" ")[1];
-    //* DECODER LE TOKEN AVEC LA METHODE "verify" AVEC EN ARGUMENTS (le token, clé secrète enrengistré dans .env)
+
+    //* Vérifie si le token est bien récupéré
+    if (!token) {
+      return res.status(401).json({ error: "Token missing" });
+    }
+
+    //* Vérifie que la clé JWT est bien définie
+    if (!process.env.JWT_TOKEN) {
+      console.error("JWT_TOKEN is not defined in environment variables.");
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    //* Décoder le token
     const decodedToken = jwt.verify(token, process.env.JWT_TOKEN);
-    //* RECUPERER "userId" DU TOKEN
+
+    //* Récupérer "userId" du token
     const userId = decodedToken.userId;
-    //* AJOUTER "userId" POUR QUE NOS ROUTES PUISSENT L'UTILISER
-    req.auth = {
-      userId: userId,
-    };
+
+    //* Ajouter "userId" pour que les routes puissent l'utiliser
+    req.auth = { userId };
+
     next();
   } catch (error) {
-    res.status(401).json({ error });
+    console.error("JWT verification error:", error);
+    res.status(401).json({ error: "Invalid or expired token" });
   }
-  console.log("JWT_TOKEN:", process.env.JWT_TOKEN);
 };
-//* ENSUITE => AJOUTER "auth" AUX ROUTES Sauce AVANT CHAQUE CONTROLLER

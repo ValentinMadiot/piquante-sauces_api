@@ -36,6 +36,7 @@ app.use(helmet());
 //* ROUTES API
 app.use("/api", userRoute);
 app.use("/api", sauceRoute);
+console.log("JWT_TOKEN:", process.env.JWT_TOKEN);
 
 //! CHEMIN IMAGE
 app.use("/images", express.static(path.join(__dirname, "/images")));
