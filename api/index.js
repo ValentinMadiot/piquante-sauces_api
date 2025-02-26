@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
 
@@ -23,6 +24,14 @@ app.on("listening", () => {
 app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
 
 //* PARAMETRAGE DES HEADERS HTTP
+
+app.use(cors());
+app.use(
+  cors({
+    origin: "https://piquante-sauces.vercel.app",
+  })
+);
+
 app.use((req, res, next) => {
   // ACCEDER A NOTRE API DEPUIS N'IMPORTE QUELLE ORIGINE
   res.setHeader("Access-Control-Allow-Origin", "*");
