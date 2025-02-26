@@ -23,17 +23,16 @@ app.on("listening", () => {
 });
 
 //* CORS CONFIGURATION
-const corsOptions = {
-  origin: "https://piquante-sauces.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
+app.use(
+  cors({
+    origin: "*", //"https://piquante-sauces.vercel.app"
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
+  })
+);
 
-// Applique CORS à toutes les routes
-app.use(cors(corsOptions));
-
-// Gère les requêtes preflight OPTIONS
-app.options("*", cors(corsOptions));
+// Gère les requêtes OPTIONS (préflight)
+app.options("*", cors());
 
 // //* HELMET => PROTEGE L'APPLICATION DE CERTAINES VULNERABILITES EN CONFIGURANT DE MANIERE APPROPRIEE DES HEADERS HTTP
 // app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
