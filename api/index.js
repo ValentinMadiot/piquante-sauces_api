@@ -16,25 +16,15 @@ const { port, errorHandler } = require("./config");
 const userRoute = require("./routes/user");
 const sauceRoute = require("./routes/sauce");
 
-//* CORS CONFIGURATION (AVANT TOUT)
-app.use(
-  cors({
-    origin: "https://piquante-me5bryhmp-valentinmdts-projects.vercel.app", // Ton frontend
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders:
-      "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-    credentials: true, // Active si besoin d’envoyer des cookies ou des headers d’authentification
-  })
-);
+//* Configuration CORS
+const corsOptions = {
+  origin: ["https://piquante-sauces.vercel.app"], // Ajoute l'URL de ton frontend
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Permet d'envoyer des cookies ou headers d'authentification
+};
 
-//* GÈRE LES REQUÊTES OPTIONS (PRE-FLIGHT)
-app.options("*", cors());
-
-//* DEBUG : LOG DES HEADERS POUR VÉRIFICATION
-app.use((req, res, next) => {
-  console.log("CORS Headers:", res.getHeaders());
-  next();
-});
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Pour gérer les requêtes OPTIONS (pré-vol)
 
 //* PARSER => ANALYSE LE CORPS D'UNE REQUÊTE HTTP
 app.use(express.json());
