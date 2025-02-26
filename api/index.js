@@ -18,9 +18,10 @@ const sauceRoute = require("./routes/sauce");
 
 //* Configuration CORS
 const corsOptions = {
-  origin: ["https://piquante-sauces.vercel.app"], // Ajoute l'URL de ton frontend
+  origin: ["https://piquante-sauces.vercel.app", "http://localhost:4200"], // Ajoute localhost pour tester en local
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Permet d'envoyer des cookies ou headers d'authentification
+  allowedHeaders: ["Content-Type", "Authorization"], // Autoriser ces headers
 };
 
 app.use(cors(corsOptions));
@@ -29,6 +30,10 @@ app.options("*", cors(corsOptions)); // Pour gérer les requêtes OPTIONS (pré-
 //* PARSER => ANALYSE LE CORPS D'UNE REQUÊTE HTTP
 app.use(express.json());
 
+//! SÉCURITÉ : Utilisation de Helmet
+app.use(helmet());
+
+//* ROUTES API
 app.use("/api", userRoute);
 app.use("/api", sauceRoute);
 
@@ -36,4 +41,4 @@ app.use("/api", sauceRoute);
 app.use("/images", express.static(path.join(__dirname, "/images")));
 
 //! LANCEMENT SUR LE PORT
-app.listen(port, () => console.log("Listening on port : " + port));
+app.listen(port, () => console.log("✅ Serveur lancé sur le port : " + port));
