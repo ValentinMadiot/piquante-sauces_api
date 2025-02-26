@@ -26,27 +26,27 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
 //* PARAMETRAGE DES HEADERS HTTP
 
 app.use(cors());
-app.use(
-  cors({
-    origin: "https://piquante-sauces.vercel.app",
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://piquante-sauces.vercel.app",
+//   })
+// );
 
-app.use((req, res, next) => {
-  // ACCEDER A NOTRE API DEPUIS N'IMPORTE QUELLE ORIGINE
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  // AJOUTER LES HEADERS MENTIONNEES AUX REQUETES ENVOYEES VERS NOTRE API
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  // ENVOYER DES REQUETES AVEC LES METHODES MENTIONNEES
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   // ACCEDER A NOTRE API DEPUIS N'IMPORTE QUELLE ORIGINE
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   // AJOUTER LES HEADERS MENTIONNEES AUX REQUETES ENVOYEES VERS NOTRE API
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+//   );
+//   // ENVOYER DES REQUETES AVEC LES METHODES MENTIONNEES
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+//   );
+//   next();
+// });
 
 //* PARSER =>  ANALYSE LE CORPS D'UNE REQUETE HTTP, ASSEMBLE LES DONNEES, CREE UN OBJET BODY EXPLOITABLE
 app.use(express.json());
