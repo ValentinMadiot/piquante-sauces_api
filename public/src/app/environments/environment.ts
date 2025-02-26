@@ -1,4 +1,6 @@
-export const environment = {
-  production: true,
-  apiUrl: 'https://piiquante-production.up.railway.app/api',
+import { Environment } from './environment.interface';
+
+export const environment: Environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000/api',
 };
