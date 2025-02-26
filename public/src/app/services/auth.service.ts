@@ -1,22 +1,25 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, tap } from 'rxjs';
+import { environment } from 'src/app/environments/environment'; // Import de l'URL d'API
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   isAuth$ = new BehaviorSubject<boolean>(false);
   private authToken = '';
   private userId = '';
+  private apiUrl = environment.apiUrl + '/auth'; // Utilisation de l'URL d'API
 
-  constructor(private http: HttpClient,
-              private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   createUser(email: string, password: string) {
-    return this.http.post<{ message: string }>('http://localhost:3000/api/auth/signup', {email: email, password: password});
+    return this.http.post<{ message: string }>(`${this.apiUrl}/signup`, {
+      email,
+      password,
+    }); // ✅ Adaptation
   }
 
   getToken() {
@@ -28,13 +31,18 @@ export class AuthService {
   }
 
   loginUser(email: string, password: string) {
-    return this.http.post<{ userId: string, token: string }>('http://localhost:3000/api/auth/login', {email: email, password: password}).pipe(
-      tap(({ userId, token }) => {
-        this.userId = userId;
-        this.authToken = token;
-        this.isAuth$.next(true);
+    return this.http
+      .post<{ userId: string; token: string }>(`${this.apiUrl}/login`, {
+        email,
+        password,
       })
-    );
+      .pipe(
+        tap(({ userId, token }) => {
+          this.userId = userId;
+          this.authToken = token;
+          this.isAuth$.next(true);
+        })
+      );
   }
 
   logout() {
@@ -43,5 +51,4 @@ export class AuthService {
     this.isAuth$.next(false);
     this.router.navigate(['login']);
   }
-
 }
