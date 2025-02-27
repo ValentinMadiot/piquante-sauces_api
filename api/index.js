@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log("🔍 [DÉMARRAGE] JWT_TOKEN:", process.env.JWT_TOKEN);
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -32,6 +33,10 @@ app.use(express.json());
 
 //! SÉCURITÉ : Utilisation de Helmet
 app.use(helmet());
+
+app.get("/debug-env", (req, res) => {
+  res.json({ JWT_TOKEN: process.env.JWT_TOKEN || "undefined" });
+});
 
 //* ROUTES API
 app.use("/api", userRoute);

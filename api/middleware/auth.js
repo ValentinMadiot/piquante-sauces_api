@@ -3,16 +3,24 @@ const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
   try {
+    console.log(
+      "🔍 [AUTH] Header Authorization reçu:",
+      req.headers.authorization
+    );
+
     //* Vérifie si le header "Authorization" est présent
     if (!req.headers.authorization) {
+      console.log("❌ [AUTH] Aucun header Authorization !");
       return res.status(401).json({ error: "Authorization header missing" });
     }
 
     //* Récupérer le token après "Bearer"
     const token = req.headers.authorization.split(" ")[1];
+    console.log("🔍 [AUTH] Token extrait:", token);
 
     //* Vérifie si le token est bien récupéré
     if (!token) {
+      console.log("❌ [AUTH] Token vide !");
       return res.status(401).json({ error: "Token missing" });
     }
 
@@ -23,7 +31,9 @@ module.exports = (req, res, next) => {
     }
 
     //* Décoder le token
+    console.log("🔍 [AUTH] JWT_TOKEN chargé:", process.env.JWT_TOKEN);
     const decodedToken = jwt.verify(token, process.env.JWT_TOKEN);
+    console.log("✅ [AUTH] Token décodé avec succès:", decodedToken);
 
     //* Récupérer "userId" du token
     const userId = decodedToken.userId;
@@ -33,7 +43,7 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("JWT verification error:", error);
+    console.log("❌ [AUTH] Erreur JWT:", error);
     res.status(401).json({ error: "Invalid or expired token" });
   }
 };
