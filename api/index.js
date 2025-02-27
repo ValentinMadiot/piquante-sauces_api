@@ -1,4 +1,5 @@
 require("dotenv").config();
+import "dotenv/config"; // Force le chargement de .env
 console.log("🔍 [DÉMARRAGE] JWT_TOKEN:", process.env.JWT_TOKEN);
 const express = require("express");
 const cors = require("cors");
@@ -14,6 +15,7 @@ app.use(morgan("dev")); // Affiche les logs des requêtes HTTP
 require("./services/database");
 
 const { port, errorHandler } = require("./config");
+console.log("✅ Port utilisé :", port);
 const userRoute = require("./routes/user");
 const sauceRoute = require("./routes/sauce");
 
@@ -47,4 +49,6 @@ console.log("JWT_TOKEN:", process.env.JWT_TOKEN);
 app.use("/images", express.static(path.join(__dirname, "/images")));
 
 //! LANCEMENT SUR LE PORT
-app.listen(port, () => console.log("✅ Serveur lancé sur le port : " + port));
+app.listen(port, () =>
+  console.log(`✅ Serveur lancé sur le port :  + ${port}`)
+);

@@ -1,17 +1,19 @@
 //! GESTION DU PORT :
 //* "normalizePort" => RENVOIE UN PORT VALIDE, QU'IL SOIT FOURNI SOUR LA FORME D'UN NUMERO OU D'UNE CHAINE
-normalizePort = (val) => {
-  const port = parseInt(val, 10);
-  if (isNaN(port)) {
-    return val;
-  }
-  if (port >= 0) {
-    return port;
-  }
-  return false;
-};
+// normalizePort = (val) => {
+//   const port = parseInt(val, 10);
+//   if (isNaN(port)) {
+//     return val;
+//   }
+//   if (port >= 0) {
+//     return port;
+//   }
+//   return false;
+// };
 
-exports.port = normalizePort(process.env.PORT || "3000");
+// exports.port = normalizePort(process.env.PORT || "8080");
+exports.port = process.env.PORT || "8080";
+console.log("✅ Port utilisé :", port);
 
 //* "errorHandler" => RECHERCHE LES DIFFERENTES ERREURS ET LES GERES DE MANIERE APPROPRIEE
 exports.errorHandler = (server, error) => {
