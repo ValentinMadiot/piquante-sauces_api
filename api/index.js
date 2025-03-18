@@ -11,12 +11,20 @@ const sauceRoute = require("./routes/sauce");
 
 const app = express();
 app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: ["https://piquante-sauces.vercel.app", "http://localhost:4200"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: [
+    "https://piquante-sauces.vercel.app",
+    "http://localhost:4200",
+    "http://localhost:8080",
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 app.use(express.json());
 app.use(helmet());
 
