@@ -1,17 +1,29 @@
-//* IMPORT MONGOOSE
 const mongoose = require("mongoose");
-
-//* IMPORT DE LA VALIDATION UNIQUE DE MONGOOSE
 const uniqueValidator = require("mongoose-unique-validator");
 
-//* CREER SCHEMA UTILISATEUR
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, trim: true },
   password: { type: String, required: true },
 });
 
-//* VERIFICATION DU SCHEMA UTILISATEUR UNIQUE AVEC LE VALIDATEUR MONGOOSE
 userSchema.plugin(uniqueValidator);
-
-//* EXPORTATION DU MODELE UTILISATEUR
 module.exports = mongoose.model("User", userSchema);
+
+// services/database.js
+const mongoose = require("mongoose");
+
+const login = process.env.MONGODB_LOGIN;
+const password = process.env.MONGODB_PASSWORD;
+const uri = `mongodb+srv://${login}:${password}@user.rbdox.mongodb.net/?retryWrites=true&w=majority&appName=user`;
+
+if (!login || !password) {
+  console.error("❌ Erreur : MONGODB_LOGIN & MONGODB_PASSWORD non définis.");
+  process.exit(1);
+}
+
+mongoose
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ Connexion MongoDB réussie !"))
+  .catch((err) => console.error("❌ Connexion MongoDB échouée !", err));
+
+module.exports = mongoose;

@@ -1,34 +1,16 @@
-//! GESTION DU PORT :
-//* "normalizePort" => RENVOIE UN PORT VALIDE, QU'IL SOIT FOURNI SOUR LA FORME D'UN NUMERO OU D'UNE CHAINE
-// normalizePort = (val) => {
-//   const port = parseInt(val, 10);
-//   if (isNaN(port)) {
-//     return val;
-//   }
-//   if (port >= 0) {
-//     return port;
-//   }
-//   return false;
-// };
-
-// exports.port = normalizePort(process.env.PORT || "8080");
-exports.port = process.env.PORT || "8080";
-console.log("✅ Port utilisé :", port);
-
-//* "errorHandler" => RECHERCHE LES DIFFERENTES ERREURS ET LES GERES DE MANIERE APPROPRIEE
+exports.port = process.env.PORT || 8080;
 exports.errorHandler = (server, error) => {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-  const address = server.address();
+  if (error.syscall !== "listen") throw error;
   const bind =
-    typeof address === "string" ? "pipe " + address : "port: " + exports.port; // Utilise exports.port ici
+    typeof server.address() === "string"
+      ? "pipe " + server.address()
+      : "port " + exports.port;
   switch (error.code) {
     case "EACCES":
-      console.error(bind + " requires elevated privileges.");
+      console.error(`${bind} nécessite des privilèges élevés.`);
       process.exit(1);
     case "EADDRINUSE":
-      console.error(bind + " is already in use.");
+      console.error(`${bind} est déjà utilisé.`);
       process.exit(1);
     default:
       throw error;

@@ -3,69 +3,53 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 //* CREER UN NOUVEL UTILISATEUR
-function signup(req, res, next) {
-  //* HASHER LE PASSWORD 10 FOIS AVEC BYCRYPT
-  bcrypt
-    .hash(req.body.password, 10)
-    //* TRANSMETTRE LE MAIL ET MDP A UN OBJET UTILISATEUR
-    .then((hash) => {
-      //* CREER UN NOUVEL UTILISATEUR
-      const user = new User({
-        //* EMAIL DE LA REQUÊTE
-        email: req.body.email,
-        //* MDP HASHER
-        password: hash,
-      });
-      //* SAUVEGARDE DANS LA DATABASE AVEC LA METHODE ".save"
-      user
-        .save()
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-        .catch((error) => res.status(500).json({ error }));
-    })
-    .catch((error) => res.status(501).json({ error }));
+async function signup(req, res) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email et mot de passe requis." });
+    }
+
+    // Vérifier si l'utilisateur existe déjà
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Cet email est déjà utilisé." });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    const user = new User({ email, password: hash });
+    await user.save();
+    res.status(201).json({ message: "Utilisateur créé !" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
 }
 
 //* CONNECTER UN UTILISATEUR EXISTANT
-function login(req, res, next) {
-  //* CHERCHER EMAIL DE L'UTILISATERUR DANS LA DATABASE AVEC LA METHODE ".findOne"
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (user === null) {
-        //* SI AUCUNE CORRESPONDANCE, ECHEC DE CONNEXION ET ON RENVOI UN MSG
-        res
-          .status(401)
-          .json({
-            message:
-              "L’adresse e-mail que vous avez saisie n’est associée à aucun compte",
-          });
-      } else {
-        //* SINON ON COMPARE LE MDP DONNEES AVEC CELUI DE LA DATABASE AVEC LA METHODE ".compare" DE BYCRYPT
-        bcrypt
-          .compare(req.body.password, user.password)
-          .then((valid) => {
-            if (!valid) {
-              //* SI IL EST INVALIDE, ECHEC DE LA CONNEXION (401)
-              res
-                .status(401)
-                .json({ message: "Paire identifiant/mot de passe incorrecte" });
-            } else {
-              //* SINON IL EST VALIDE, POURSUIT LA CONNEXION (201)
-              res.status(200).json({
-                userId: user._id,
-                //* ENVOI UN TOKEN D'AUTHENTIFICATION AVEC LA METHODE ".sign" DE JASONWEBTOKEN
-                token: jwt.sign(
-                  //* ARGUMENTS : userId, token dans ".env", durée de validité
-                  { userId: user._id },
-                  process.env.JWT_TOKEN,
-                  { expiresIn: "24h" }
-                ),
-              });
-            }
-          })
-          .catch((error) => res.status(500).json({ error }));
-      }
-    })
-    .catch((error) => res.status(501).json({ error }));
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email et mot de passe requis." });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Identifiants incorrects." });
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      return res.status(401).json({ message: "Identifiants incorrects." });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, {
+      expiresIn: "24h",
+    });
+    res.status(200).json({ userId: user._id, token });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
 }
 
 module.exports = { signup, login };
