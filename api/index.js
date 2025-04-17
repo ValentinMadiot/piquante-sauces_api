@@ -1,11 +1,11 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
+const cors = require("cors");
 
-// 0. Connexion MongoDB (effet de bord)
+//* 0. Connexion MongoDB (side‑effect)
 require("./services/database");
 
 const { port, errorHandler } = require("./config");
@@ -14,17 +14,34 @@ const sauceRoute = require("./routes/sauce");
 
 const app = express();
 
-// Si vous tournez derrière un proxy (Railway, Vercel…)
+//* 1. Trust proxy pour récupérer le vrai Origin
 app.set("trust proxy", 1);
 
-// 1. Logging & Security
+//* 2. Handler MANUEL des pré‑vols OPTIONS, AVANT tout autre middleware
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    // On renvoie nous‑mêmes un 204 avec tous les headers CORS
+    return res
+      .header("Access-Control-Allow-Origin", req.get("Origin") || "*")
+      .header(
+        "Access-Control-Allow-Methods",
+        "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      )
+      .header("Access-Control-Allow-Headers", "Content-Type,Authorization")
+      .status(204)
+      .end();
+  }
+  next();
+});
+
+//* 3. Logging & sécurité
 app.use(morgan("dev"));
 app.use(helmet());
 
-// 2. Body parsing
+//* 4. Parsing JSON
 app.use(express.json());
 
-// 3. CORS : liste paramétrable depuis l'env ou valeur par défaut
+//* 5. CORS « standard » (pour les vraies routes, après le pré‑vol)
 const whitelist = process.env.CORS_WHITELIST
   ? process.env.CORS_WHITELIST.split(",")
   : [
@@ -34,10 +51,7 @@ const whitelist = process.env.CORS_WHITELIST
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Pas d’origin = Postman ou CLI → OK
-    if (!origin || whitelist.includes(origin)) {
-      return callback(null, true);
-    }
+    if (!origin || whitelist.includes(origin)) return callback(null, true);
     callback(new Error(`Bloqué par CORS : ${origin}`), false);
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -47,16 +61,15 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // pré‑flight
 
-// 4. Routes
+//* 6. Routes
 app.use("/api", userRoute);
 app.use("/api", sauceRoute);
 
-// 5. Static files
+//* 7. Fichiers statiques
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-// 6. Error handler
+//* 8. Gestionnaire d’erreurs
 app.use((err, req, res, next) => {
   console.error("💥 Erreur détectée :", err.message);
   if (err.message.startsWith("Bloqué par CORS")) {
@@ -65,7 +78,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Erreur interne du serveur" });
 });
 
-// 7. Start server
+//* 9. Démarrage du serveur
 const server = app.listen(port, () =>
   console.log(`✅ Serveur lancé sur le port ${port}`)
 );
