@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const path = require("path");
 const morgan = require("morgan");
 
-// Initialise la connexion MongoDB
+// Connexion à MongoDB (effet de bord)
 require("./services/database");
 
 const { port, errorHandler } = require("./config");
@@ -14,46 +14,65 @@ const sauceRoute = require("./routes/sauce");
 
 const app = express();
 
-// 1. Logging des requêtes
+// 1. Logger HTTP
 app.use(morgan("dev"));
 
-// 2. Sécurisation des en‑têtes HTTP
+// 2. Sécuriser les headers
 app.use(helmet());
 
-// 3. Parsing JSON
+// 3. Parser le JSON
 app.use(express.json());
 
-// 4. CORS : lister les origines autorisées (avec le schéma complet pour production)
+// 4. Configuration CORS avancée
+const allowedOrigins = [
+  "https://piiquante-production.up.railway.app",
+  "https://piiquante-sauces.vercel.app",
+];
+const vercelRegex = /\.vercel\.app$/; // autorise tous les sous‑domains Vercel
+const railwayRegex = /\.railway\.app$/; // autorise tous les sous‑domains Railway
+
 const corsOptions = {
-  origin: [
-    "https://piiquante-production.up.railway.app",
-    "https://piquante-sauces.vercel.app",
-    "http://localhost:4200",
-    "http://localhost:8080",
-  ],
+  origin: (origin, callback) => {
+    // Permet les requêtes sans Origin (Postman, certains clients mobile, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+    // Autorise si dans la whitelist OU match regex Vercel/Railway
+    if (
+      allowedOrigins.includes(origin) ||
+      vercelRegex.test(origin) ||
+      railwayRegex.test(origin)
+    ) {
+      return callback(null, true);
+    }
+    // Sinon, bloqué
+    callback(new Error(`Bloqué par CORS : origine non autorisée (${origin})`));
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
+  optionsSuccessStatus: 204, // certains navigateurs (IE11) attendent 204 pour OPTIONS
 };
-app.use(cors(corsOptions));
 
-// 5. Routes
+// Applique CORS à toutes les routes, et gère explicitement les pre‑flights
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+// 5. Vos routes API
 app.use("/api", userRoute);
 app.use("/api", sauceRoute);
 
-// 6. Fichiers statiques (images)
+// 6. Servir les images statiques
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-// 7. Gestionnaire d’erreurs global
+// 7. Middleware de gestion globale des erreurs
 app.use((err, req, res, next) => {
-  console.error("💥 Erreur interne du serveur :", err);
-  res
-    .status(500)
-    .json({ message: "Erreur interne du serveur", error: err.message });
+  console.error("💥 Erreur interne du serveur :", err.message);
+  res.status(500).json({ message: "Erreur interne du serveur" });
 });
 
-// 8. Démarrage du serveur et gestion des erreurs d’écoute
-const server = app.listen(port, () => {
-  console.log(`✅ Serveur lancé sur le port ${port}`);
-});
+// 8. Démarrage du serveur + gestion des erreurs d’écoute
+const server = app.listen(port, () =>
+  console.log(`✅ Serveur lancé sur le port ${port}`)
+);
 server.on("error", errorHandler);
