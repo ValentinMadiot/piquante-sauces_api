@@ -21,6 +21,7 @@ async function signup(req, res) {
     await user.save();
     res.status(201).json({ message: "Utilisateur créé !" });
   } catch (error) {
+    console.error("Erreur lors de l'inscription :", error);
     res.status(500).json({ message: "Erreur serveur", error });
   }
 }
@@ -48,6 +49,7 @@ async function login(req, res) {
     });
     res.status(200).json({ userId: user._id, token });
   } catch (error) {
+    console.error("Erreur lors de la connexion :", error);
     res.status(500).json({ message: "Erreur serveur", error });
   }
 }

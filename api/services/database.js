@@ -7,6 +7,7 @@ const password = process.env.MONGODB_PASSWORD;
 
 //* CONNEXTION A LA BASE DE DONNEE MONGODB AVEC L'ADRESSE
 const uri = `mongodb+srv://${login}:${password}@user.rbdox.mongodb.net/?retryWrites=true&w=majority&appName=user`;
+// const uri = "mongodb://127.0.0.1:27017/piquante"; test local
 
 if (!uri) {
   console.error(
@@ -16,10 +17,12 @@ if (!uri) {
 }
 
 //* RESUTAT CONNEXION A MONGODB
+mongoose.set("strictQuery", false);
+
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ Connexion à MongoDB réussie !"))
   .catch((err) => console.error("❌ Connexion à MongoDB échouée !", err));
 
 //* EXPORT
-module.exports = { mongoose };
+module.exports = mongoose;

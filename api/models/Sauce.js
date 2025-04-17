@@ -1,5 +1,5 @@
 //* IMPORT MONGOOSE
-const mongoose = require("mongoose");
+const mongoose = require("../services/database");
 
 //* CREER SCHEMA SAUCE
 const sauceSchema = mongoose.Schema({
