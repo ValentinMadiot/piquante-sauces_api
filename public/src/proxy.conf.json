@@ -1,6 +1,8 @@
 {
   "/api": {
-    "target": "https://piiquante-production.up.railway.app",
-    "secure": false
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }

@@ -1,6 +1,4 @@
-import { Environment } from './environment.interface';
-
-export const environment: Environment = {
+export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api',
+  apiUrl: '', // laisse vide pour utiliser le proxy : fetch(`${apiUrl}/api/...`) devient fetch('/api/...')
 };
