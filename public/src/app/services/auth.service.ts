@@ -12,17 +12,14 @@ export class AuthService {
   private authToken = '';
   private userId = '';
 
-  // En dev : '/api/auth', via proxy.conf.json
-  // En prod: 'https://piquante-production.up.railway.app/api/auth'
-  private apiUrl = environment.production
-    ? `${environment.apiUrl}/auth`
-    : '/api/auth';
+  // baseUrl est toujours "/api/auth"
+  private baseUrl = `${environment.apiUrl}/api/sauces`;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   // Création d'utilisateur
   createUser(email: string, password: string) {
-    return this.http.post<{ message: string }>(`${this.apiUrl}/signup`, {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/signup`, {
       email,
       password,
     });
@@ -41,7 +38,7 @@ export class AuthService {
   // Connexion utilisateur
   loginUser(email: string, password: string) {
     return this.http
-      .post<{ userId: string; token: string }>(`${this.apiUrl}/login`, {
+      .post<{ userId: string; token: string }>(`${this.baseUrl}/login`, {
         email,
         password,
       })

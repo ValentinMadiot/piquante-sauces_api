@@ -13,10 +13,8 @@ export class SaucesService {
   // Sujets pour émettre la liste de sauces
   sauces$ = new Subject<Sauce[]>();
 
-  // Base URL qui passe par proxy en dev, ou pointe direct en prod
-  private baseUrl = environment.production
-    ? `${environment.apiUrl}/sauces`
-    : '/api/sauces';
+  // baseUrl est "/api/sauces"
+  private baseUrl = `${environment.apiUrl}/api/sauces`;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 

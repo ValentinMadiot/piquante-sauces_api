@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://piiquante-production.up.railway.app/api',
+  apiUrl: '', // Pas de domaine absolu, on passe par Vercel
 };
