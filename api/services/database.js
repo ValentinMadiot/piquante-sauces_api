@@ -7,7 +7,7 @@ const password = process.env.MONGODB_PASSWORD;
 
 //* CONNEXTION A LA BASE DE DONNEE MONGODB AVEC L'ADRESSE
 const uri = `mongodb+srv://${login}:${password}@user.rbdox.mongodb.net/?retryWrites=true&w=majority&appName=user`;
-// const uri = "mongodb://127.0.0.1:27017/piquante"; test local
+// const uri = "mongodb://127.0.0.1:27017/piquante"; //test local
 
 if (!uri) {
   console.error(

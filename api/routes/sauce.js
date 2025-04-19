@@ -16,12 +16,12 @@ const {
 const router = express.Router();
 
 //* ROUTES SAUCES
-router.post("/api/sauces", auth, multer, createSauce);
-router.get("/api/sauces", auth, getAllSauces);
-router.get("/api/sauces/:id", auth, getOneSauce);
-router.put("/api/sauces/:id", auth, multer, modifySauce);
-router.delete("/api/sauces/:id", auth, deleteSauce);
-router.post("/api/sauces/:id/like", auth, likeDislikeSauce);
+router.post("/sauces", auth, multer, createSauce);
+router.get("/sauces", auth, getAllSauces);
+router.get("/sauces/:id", auth, getOneSauce);
+router.put("/sauces/:id", auth, multer, modifySauce);
+router.delete("/sauces/:id", auth, deleteSauce);
+router.post("/sauces/:id/like", auth, likeDislikeSauce);
 
 //* EXPORTATION DES ROUTES
 module.exports = router;
