@@ -13,5 +13,11 @@
       "source": "/api/:path*",
       "destination": "https://piiquante-production.up.railway.app/api/:path*"
     }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/public/src/index.html"
+    }
   ]
 }
