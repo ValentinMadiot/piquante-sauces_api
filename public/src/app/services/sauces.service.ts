@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject, of, throwError } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
-import { environment } from 'src/app/environments/environment';
+import { environment } from 'src/environments/environment';
 import { Sauce } from '../models/Sauce.model';
 import { AuthService } from './auth.service';
 
