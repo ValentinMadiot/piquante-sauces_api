@@ -13,7 +13,7 @@ export class AuthService {
   private userId = '';
 
   // baseUrl est toujours "/api/auth"
-  private baseUrl = `${environment.apiUrl}/api/sauces`;
+  private baseUrl = `${environment.apiUrl}/api/auth`;
 
   constructor(private http: HttpClient, private router: Router) {}
 
