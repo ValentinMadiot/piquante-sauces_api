@@ -8,11 +8,10 @@
       "config": { "distDir": "dist/hot-takes" }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://piiquante-production.up.railway.app/api/$1"
-    },
-    { "src": "/(.*)", "dest": "/public/$1" }
+      "source": "/api/:path*",
+      "destination": "https://piiquante-production.up.railway.app/api/:path*"
+    }
   ]
 }
