@@ -13,17 +13,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://piiquante-production.up.railway.app/api/:path*"
-    }
-  ],
-
-  "redirects": [
+    },
     {
-      "source": "/:path*",
-      "destination": "/index.html",
-      "statusCode": 200
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  ],
-
-  "cleanUrls": true,
-  "trailingSlash": false
+  ]
 }
