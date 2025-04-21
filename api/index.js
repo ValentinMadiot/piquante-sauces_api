@@ -13,7 +13,6 @@ const userRoute = require("./routes/user");
 const sauceRoute = require("./routes/sauce");
 
 const app = express();
-const isProd = process.env.NODE_ENV === "production";
 
 // 1) Sécurité HTTP légère
 app.use(
@@ -29,21 +28,25 @@ app.use(
 app.use(morgan("dev"));
 
 // 3) CORS (tout accepter en dev, whitelist en prod)
-const allowedOrigins = [
-  "https://piiquante-production.up.railway.app",
-  "https://piquante-sauces.vercel.app",
+const whitelist = [
+  "http://localhost:4200", // dev Angular
+  "https://piquante-sauces.vercel.app", // prod Front
 ];
+
 app.use(
   cors({
-    origin: isProd
-      ? (origin, cb) =>
-          allowedOrigins.includes(origin)
-            ? cb(null, true)
-            : cb(new Error(`CORS bloqué: ${origin}`))
-      : true,
+    origin: (origin, callback) => {
+      // Postman ou mobiles sans Origin passent
+      if (!origin || whitelist.includes(origin)) return callback(null, true);
+      callback(new Error(`CORS bloqué : ${origin}`), false);
+    },
     credentials: true,
+    optionsSuccessStatus: 204,
   })
 );
+
+// gère les OPTIONS automatiquement pour toutes les routes
+app.options("*", cors());
 
 // 4) Parser JSON
 app.use(express.json());
@@ -53,14 +56,7 @@ app.use("/api", userRoute);
 app.use("/api", sauceRoute);
 
 // 6) Images publiques (avec CORS *)
-app.use(
-  "/images",
-  (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-  },
-  express.static(path.join(__dirname, "images"))
-);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // 7) Gestionnaire d’erreurs global
 app.use((err, req, res, next) => {

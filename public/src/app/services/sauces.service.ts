@@ -14,7 +14,7 @@ export class SaucesService {
   sauces$ = new Subject<Sauce[]>();
 
   // baseUrl est "/api/sauces"
-  private baseUrl = `${environment.apiUrl}/api/sauces`;
+  private baseUrl = `${environment.apiUrl}/sauces`;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
