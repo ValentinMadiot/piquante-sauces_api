@@ -1,18 +1,27 @@
 .sauce-container {
+  padding-top: 2rem;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  max-width: 850px;
+  margin: 0 auto;
+
   img {
-    max-height: 70vh;
-    flex: 1;
+    max-height: 50vh;
+    width: auto;
+    object-fit: contain;
   }
 }
 
 .sauce-info {
-  padding: 40px 20px;
   flex: 1;
+  padding: 40px 20px;
 }
 
 .manufacturer {
   margin: 0;
+  white-space: pre-line;
 }
 
 .sauce-name {
@@ -27,7 +36,8 @@
   }
 }
 
-.likes, .dislikes {
+.likes,
+.dislikes {
   margin: 0 0.4em;
 }
 
@@ -63,5 +73,24 @@
 .control-buttons {
   button {
     margin: 1em 1em 0 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .sauce-container {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .sauce-container img {
+    max-height: 50vh;
+    width: auto;
+    margin-top: 1rem;
+  }
+
+  .sauce-info {
+    padding: 20px;
+    margin: 0 auto;
   }
 }
