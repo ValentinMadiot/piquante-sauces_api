@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
 
-// Connexion MongoDB (side‑effect)
+// Connexion MongoDB (side-effect)
 require("./services/database");
 
 const { port, errorHandler } = require("./config");
@@ -14,39 +14,50 @@ const sauceRoute = require("./routes/sauce");
 
 const app = express();
 
-// 1) Sécurité HTTP légère
-app.use(
-  helmet({
-    // Désactive la Content Security Policy en dev pour éviter tout blocage
-    contentSecurityPolicy: false,
-    // Autorise le chargement d’images cross‑origin
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
-);
+// 0) PRE-FLIGHT handler pour toutes les OPTIONS (On répond 204 avec tous les Access-Control-Allow-)
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", req.header("Origin") || "*");
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+    );
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(204);
+  }
+  next();
+});
 
-// 2) Logger des requêtes
-app.use(morgan("dev"));
-
-// 3) CORS (tout accepter en dev, whitelist en prod)
+// 1) CORS whitelist
 const whitelist = [
   "http://localhost:4200", // dev Angular
-  "https://piquante-sauces.vercel.app", // prod Front
+  "https://piquante-sauces.vercel.app", // prod front
 ];
-
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Postman ou mobiles sans Origin passent
-      if (!origin || whitelist.includes(origin)) return callback(null, true);
-      callback(new Error(`CORS bloqué : ${origin}`), false);
+      // autoriser Postman ou mobiles (no origin) et les domaines listés
+      if (!origin || whitelist.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error(`CORS bloqué : ${origin}`), false);
     },
     credentials: true,
     optionsSuccessStatus: 204,
   })
 );
 
-// gère les OPTIONS automatiquement pour toutes les routes
-app.options("*", cors());
+// 2) Sécurité HTTP légère
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // désactivée en dev pour éviter blocages
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // images cross-origin
+  })
+);
+
+// 3) Logger HTTP
+app.use(morgan("dev"));
 
 // 4) Parser JSON
 app.use(express.json());
@@ -55,12 +66,20 @@ app.use(express.json());
 app.use("/api", userRoute);
 app.use("/api", sauceRoute);
 
-// 6) Images publiques (avec CORS *)
-app.use("/images", express.static(path.join(__dirname, "images")));
+// 6) Images statiques
+app.use(
+  "/images",
+  (req, res, next) => {
+    // autorise tout le monde pour les ressources images
+    res.header("Access-Control-Allow-Origin", "*");
+    next();
+  },
+  express.static(path.join(__dirname, "images"))
+);
 
-// 7) Gestionnaire d’erreurs global
+// 7) Error handler global
 app.use((err, req, res, next) => {
-  console.error("💥 Erreur détectée :", err.message);
+  console.error("💥 Erreur détectée :", err.message);
   if (err.message.startsWith("CORS bloqué")) {
     return res.status(403).json({ message: err.message });
   }
