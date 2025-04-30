@@ -15,7 +15,6 @@ const sauceRoute = require("./routes/sauce");
 const app = express();
 
 // 1) CORS pour TOUTES origines (prod + dev)
-const cors = require("cors");
 app.use(cors());
 app.options("*", cors());
 
