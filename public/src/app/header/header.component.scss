@@ -110,6 +110,7 @@ a {
   .right-nav {
     grid-area: logout;
     justify-self: end;
+    width: auto;
   }
   .right-nav ul {
     display: flex;

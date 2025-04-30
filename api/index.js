@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const cors = require("cors");
 const path = require("path");
 
 // Connexion MongoDB (side-effect)
@@ -14,76 +14,60 @@ const sauceRoute = require("./routes/sauce");
 
 const app = express();
 
-// 0) PRE-FLIGHT handler pour toutes les OPTIONS (On répond 204 avec tous les Access-Control-Allow-)
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Origin", req.header("Origin") || "*");
-    res.header(
-      "Access-Control-Allow-Methods",
-      "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
-    );
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
-    return res.sendStatus(204);
-  }
-  next();
-});
-
-// 1) CORS whitelist
+// 1) CORS whitelist (dev & prod)
 const whitelist = [
-  "http://localhost:4200", // dev Angular
-  "https://piquante-sauces.vercel.app", // prod front
+  "http://localhost:4200", // Angular dev
+  "https://piquante-sauces.vercel.app", // Front prod
 ];
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // autoriser Postman ou mobiles (no origin) et les domaines listés
-      if (!origin || whitelist.includes(origin)) {
-        return callback(null, true);
-      }
-      callback(new Error(`CORS bloqué : ${origin}`), false);
+    origin: (origin, cb) => {
+      // Postman/Curl (no origin) => OK
+      if (!origin) return cb(null, true);
+      // Origine dans la whitelist => OK
+      if (whitelist.includes(origin)) return cb(null, true);
+      // Sinon => blocage
+      return cb(new Error(`CORS bloqué : ${origin}`), false);
     },
     credentials: true,
     optionsSuccessStatus: 204,
   })
 );
+app.options("*", cors()); // pré-vols OPTIONS
 
-// 2) Sécurité HTTP légère
+// 2) Sécurité HTTP
 app.use(
   helmet({
-    contentSecurityPolicy: false, // désactivée en dev pour éviter blocages
-    crossOriginResourcePolicy: { policy: "cross-origin" }, // images cross-origin
+    contentSecurityPolicy: false, // désactive CSP en dev
+    crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
 
 // 3) Logger HTTP
 app.use(morgan("dev"));
 
-// 4) Parser JSON
+// 4) Body parser JSON
 app.use(express.json());
 
 // 5) Routes API
+// → /api/auth/signup  &  /api/auth/login
 app.use("/api", userRoute);
+// → /api/sauces/*
 app.use("/api", sauceRoute);
 
 // 6) Images statiques
-app.use(
-  "/images",
-  (req, res, next) => {
-    // autorise tout le monde pour les ressources images
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-  },
-  express.static(path.join(__dirname, "images"))
-);
+// → /images/<filename>
+app.use("/images", express.static(path.join(__dirname, "images")));
 
-// 7) Error handler global
+// 7) Gestionnaire d’erreurs global
 app.use((err, req, res, next) => {
   console.error("💥 Erreur détectée :", err.message);
   if (err.message.startsWith("CORS bloqué")) {
     return res.status(403).json({ message: err.message });
   }
-  res.status(500).json({ message: "Erreur interne du serveur" });
+  res
+    .status(err.status || 500)
+    .json({ message: err.message || "Erreur interne du serveur" });
 });
 
 // 8) Démarrage du serveur

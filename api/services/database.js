@@ -1,28 +1,31 @@
-//* IMPORT LIBRAIRIE MONGOOSE
 const mongoose = require("mongoose");
 
-//* VARIABLES D'ENVIRONEMENTS
-const login = process.env.MONGODB_LOGIN;
-const password = process.env.MONGODB_PASSWORD;
+// On lit une NODE_ENV standard de Node.js
+const env = process.env.NODE_ENV || "development";
 
-//* CONNEXTION A LA BASE DE DONNEE MONGODB AVEC L'ADRESSE
-const uri = `mongodb+srv://${login}:${password}@user.rbdox.mongodb.net/?retryWrites=true&w=majority&appName=user`;
-// const uri = "mongodb://127.0.0.1:27017/piquante"; //test local
+// On récupère les deux URI depuis l’env
+const uriDev = process.env.MONGODB_URI_DEV;
+const uriProd = process.env.MONGODB_URI_PROD;
+
+// On choisit la bonne URI suivant l’environnement
+const uri = env === "production" ? uriProd : uriDev;
 
 if (!uri) {
   console.error(
-    "❌ Erreur : MONGODB_LOGIN & MONGODB_PASSWORD non défini dans .env"
+    `❌ Erreur : MONGODB_URI_${env.toUpperCase()} non défini dans .env`
   );
   process.exit(1);
 }
 
-//* RESUTAT CONNEXION A MONGODB
+// Configuration Mongoose
 mongoose.set("strictQuery", false);
 
 mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ Connexion à MongoDB réussie !"))
-  .catch((err) => console.error("❌ Connexion à MongoDB échouée !", err));
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log(`✅ MongoDB connecté (${env})`))
+  .catch((err) => console.error("❌ Échec de connexion MongoDB :", err));
 
-//* EXPORT
 module.exports = mongoose;
