@@ -15,7 +15,7 @@
 &nbsp;&nbsp;&nbsp; 🚧 &nbsp; [**Mise à Jour & Déploiement**](#upgrade)<br />
 &nbsp;&nbsp;&nbsp; 🚀 &nbsp; [**Installation**](#installation)
 
-## <br /> 🎨 Introduction
+## <br /> <a name="introduction">🎨 Introduction</a>
 
 Ce projet consiste en une application de partage de sauces piquantes, avec un backend **Node.js/Express** connecté à **MongoDB** pour gérer les utilisateurs et les sauces, et un frontend **Angular** pour une interface moderne et réactive.
 
@@ -24,14 +24,14 @@ Ce projet consiste en une application de partage de sauces piquantes, avec un ba
 
 📂 Pour plus de détails, consultez le [dossier](.docs/).
 
-## <br /> 🛠️ Technologies
+## <br /> <a name="technologies">🛠️ Technologies</a>
 
 - **Backend** : Node.js, Express, Mongoose (MongoDB), bcrypt, JSON Web Token
 - **Frontend** : Angular, RxJS, Tailwind CSS (ou Bootstrap selon implémentation)
 - **Base de données** : MongoDB (via MongoDB Atlas ou MongoDB Compass local)
 - **Déploiement** : Railway (backend), Vercel (frontend)
 
-## <br /> 🎯 Fonctionnalités
+## <br /> <a name="fonctionnalités">🎯 Fonctionnalités</a>
 
 - **Inscription / Connexion** : gestion sécurisée des utilisateurs avec hash bcrypt et JWT
 - **CRUD Sauces** : création, lecture, modification, suppression de sauces avec upload d'image
@@ -40,7 +40,7 @@ Ce projet consiste en une application de partage de sauces piquantes, avec un ba
 - **Affichage dynamique** : interface Angular réactive, routing client-side
 - **Upload d’images** : gestion des fichiers statiques avec Express
 
-## <br /> 🚧 Mise à Jour & Déploiement
+## <br /> <a name="upgrade">🚧 Mise à Jour</a>
 
 Afin de rendre le projet déployable en production, plusieurs ajustements ont été apportés :
 
@@ -51,7 +51,7 @@ Afin de rendre le projet déployable en production, plusieurs ajustements ont é
   - Backend sur **Railway** (URL : `https://piiquante-production.up.railway.app`)
   - Frontend sur **Vercel** (URL : `https://piquante-sauces.vercel.app`)
 
-## <br /> 🚀 Installation
+## <br /> <a name="installation">🚀 Installation</a>
 
 ### ✅ Pré-requis
 
