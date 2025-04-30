@@ -14,26 +14,10 @@ const sauceRoute = require("./routes/sauce");
 
 const app = express();
 
-// 1) CORS whitelist (dev & prod)
-const whitelist = [
-  "http://localhost:4200", // Angular dev
-  "https://piquante-sauces.vercel.app", // Front prod
-];
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      // Postman/Curl (no origin) => OK
-      if (!origin) return cb(null, true);
-      // Origine dans la whitelist => OK
-      if (whitelist.includes(origin)) return cb(null, true);
-      // Sinon => blocage
-      return cb(new Error(`CORS bloqué : ${origin}`), false);
-    },
-    credentials: true,
-    optionsSuccessStatus: 204,
-  })
-);
-app.options("*", cors()); // pré-vols OPTIONS
+// 1) CORS pour TOUTES origines (prod + dev)
+const cors = require("cors");
+app.use(cors());
+app.options("*", cors());
 
 // 2) Sécurité HTTP
 app.use(

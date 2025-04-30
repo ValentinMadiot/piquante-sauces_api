@@ -22,6 +22,8 @@ Ce projet consiste en une application de partage de sauces piquantes, avec un ba
 - Le **backend** expose une API REST pour la création, la lecture, la mise à jour, la suppression (CRUD) de sauces, ainsi que l'authentification (signup/login) et la gestion des likes/dislikes.
 - Le **frontend** Angular consomme cette API, affiche dynamiquement les sauces, permet l'upload d'images et la navigation client-side.
 
+📂 Pour plus de détails, consultez le [dossier](.docs/).
+
 ## <br /> 🛠️ Technologies
 
 - **Backend** : Node.js, Express, Mongoose (MongoDB), bcrypt, JSON Web Token
@@ -67,9 +69,12 @@ cp api/.env.example api/.env
 ```
 
 ```dotenv
-MONGODB_URI_PROD=votre_uri_mongodb
-MONGODB_URI_DEV=mongodb://127.0.0.1:27017/piquante
-JWT_TOKEN=votre_cle_secrete_jwt
+# IDENTIFIANT BASE DE DONNEES (MongoDB)
+MONGODB_URI_PROD=
+MONGODB_URI_DEV=
+
+# PASSWORD JWT (Associer à un User après Login)
+JWT_TOKEN=
 ```
 
 ### 📥 Cloner le projet
@@ -103,11 +108,7 @@ npm install
 ### ▶️ Lancer le frontend en développement
 
 ```bash
-ng serve --proxy-config src/proxy.conf.json
+npm start
 ```
 
 Le frontend Angular tourne sur : [http://localhost:4200](http://localhost:4200)
-
----
-
-> Pour plus de détails, consultez le [docs](/.docs) pour captures d’écran et diagrammes d’architecture. Tu as oublié de parler du fichier .env
