@@ -29,7 +29,7 @@ Ce projet consiste en une application de partage de sauces piquantes, avec un ba
 - **Backend** : Node.js, Express, Mongoose (MongoDB), bcrypt, JSON Web Token
 - **Frontend** : Angular, RxJS, Tailwind CSS (ou Bootstrap selon implémentation)
 - **Base de données** : MongoDB (via MongoDB Atlas ou MongoDB Compass local)
-- **Déploiement** : Railway (backend), Vercel (frontend)
+- **Déploiement** : Render (backend), Vercel (frontend)
 
 ## <br /> <a name="fonctionnalités">🎯 Fonctionnalités</a>
 
@@ -48,7 +48,7 @@ Afin de rendre le projet déployable en production, plusieurs ajustements ont é
 - **Preflight OPTIONS** : gestion manuelle des requêtes pré-vol OPTIONS pour éviter les 405
 - **Organisation** : séparation claire des dossiers `api/` pour le backend et `public/` pour le frontend
 - **Déploiement** :
-  - Backend sur **Railway** (URL : `https://piiquante-production.up.railway.app`)
+  - Backend sur **Render** (URL : `https://piquante-sauces-api.onrender.com`)
   - Frontend sur **Vercel** (URL : `https://piquante-sauces.vercel.app`)
 
 ## <br /> <a name="installation">🚀 Installation</a>
