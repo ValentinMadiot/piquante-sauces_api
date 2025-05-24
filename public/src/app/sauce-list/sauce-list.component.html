@@ -1,7 +1,7 @@
 <mat-spinner *ngIf="loading"></mat-spinner>
 <ng-container class="ng-container" *ngIf="sauces$ | async as sauces">
   <p class="empty-msg" *ngIf="!loading && sauces.length <= 0">
-    Aucune sauce à afficher !
+    Aucune Sauce à Afficher !
   </p>
   <div class="sauce-list" *ngIf="!loading && sauces.length > 0">
     <div
