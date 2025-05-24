@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  text-align: center;
   gap: 3rem;
   max-width: 1000px;
   margin: 4rem auto;
@@ -11,13 +12,15 @@
     max-width: 300px;
     max-height: 400px;
     object-fit: contain;
+    margin: 0;
+    display: block;
     border-radius: 6px;
   }
 }
 
 .sauce-info {
-  flex: 1;
-  padding: 20px;
+  max-width: 500px;
+  text-align: left;
 }
 
 .sauce-name {
