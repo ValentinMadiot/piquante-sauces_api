@@ -1,14 +1,15 @@
 nav {
   box-sizing: border-box;
   width: 100%;
-  max-width: 1400px;
+  // max-width: 1400px;
   margin: auto;
   position: relative;
   top: 0;
   left: 0;
   display: flex;
-  padding: 20px;
   justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
   border-bottom: thin solid black;
 }
 
@@ -16,12 +17,14 @@ h1 {
   font-weight: 700;
   font-size: 2.4em;
   margin: 0;
+  padding: 1rem 1rem 1rem 0;
 }
 
 h5 {
-  font-size: 1.2em;
   font-weight: 400;
+  font-size: 1.2em;
   margin: 0;
+  padding: 0 1rem 0 0;
 }
 
 .logo {
@@ -35,9 +38,9 @@ h5 {
 
 .logo-image {
   img {
-    height: 4.5em;
+    height: 5.5em;
   }
-  margin-right: 1em;
+  margin: 0 1rem;
 }
 
 .left-nav,
@@ -54,7 +57,7 @@ h5 {
 
 ul {
   list-style: none;
-  padding: 0;
+  padding: 1rem;
   margin: 0;
   display: flex;
 }
@@ -64,12 +67,42 @@ li {
 }
 
 a {
+  position: relative;
   color: black;
-  font-weight: 400;
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
+  transition: color 0.2s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3.5px;
+    width: 0%;
+    height: 2px;
+    background-color: #b71c1c;
+    transition: width 0.3s ease;
+  }
+
   &:hover {
-    text-decoration: underline;
+    color: #8e0000 !important;
+
+    &::after {
+      width: 65%;
+    }
+  }
+
+  &.active {
+    font-weight: 700;
+    color: #8e0000;
+    text-decoration: none !important;
+
+    // On désactive totalement la ligne sous le lien actif
+    &::after {
+      width: 0%;
+      height: 0;
+    }
   }
 }
 

@@ -12,12 +12,20 @@ export class AuthService {
   private authToken = '';
   private userId = '';
 
-  // baseUrl est toujours "/api/auth"
   private baseUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    // Restore session si token présent en localStorage
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
 
-  // Création d'utilisateur
+    if (token && userId) {
+      this.authToken = token;
+      this.userId = userId;
+      this.isAuth$.next(true);
+    }
+  }
+
   createUser(email: string, password: string) {
     return this.http.post<{ message: string }>(`${this.baseUrl}/signup`, {
       email,
@@ -25,17 +33,6 @@ export class AuthService {
     });
   }
 
-  // Récupérer le token en mémoire
-  getToken() {
-    return this.authToken;
-  }
-
-  // Récupérer l'ID utilisateur
-  getUserId() {
-    return this.userId;
-  }
-
-  // Connexion utilisateur
   loginUser(email: string, password: string) {
     return this.http
       .post<{ userId: string; token: string }>(`${this.baseUrl}/login`, {
@@ -47,15 +44,27 @@ export class AuthService {
           this.userId = userId;
           this.authToken = token;
           this.isAuth$.next(true);
+          // ✅ Stocker token + userId
+          localStorage.setItem('token', token);
+          localStorage.setItem('userId', userId);
         })
       );
   }
 
-  // Déconnexion
   logout() {
     this.authToken = '';
     this.userId = '';
     this.isAuth$.next(false);
-    this.router.navigate(['login']);
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    this.router.navigate(['/login']);
+  }
+
+  getToken() {
+    return this.authToken;
+  }
+
+  getUserId() {
+    return this.userId;
   }
 }

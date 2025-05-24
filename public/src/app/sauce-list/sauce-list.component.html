@@ -1,8 +1,7 @@
 <mat-spinner *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="sauces$ | async as sauces">
-  <p *ngIf="!loading && sauces.length <= 0">Aucune sauce à afficher !</p>
-  <p class="list-title" *ngIf="!loading && sauces.length > 0">
-    Liste des Sauces
+<ng-container class="ng-container" *ngIf="sauces$ | async as sauces">
+  <p class="empty-msg" *ngIf="!loading && sauces.length <= 0">
+    Aucune sauce à afficher !
   </p>
   <div class="sauce-list" *ngIf="!loading && sauces.length > 0">
     <div
@@ -15,7 +14,7 @@
         [src]="sauce.imageUrl"
         loading="lazy"
       />
-      <h4>{{ sauce.name | uppercase }}</h4>
+      <h4>{{ sauce.name }}</h4>
       <p>Intensité : {{ sauce.heat }}/10</p>
     </div>
   </div>

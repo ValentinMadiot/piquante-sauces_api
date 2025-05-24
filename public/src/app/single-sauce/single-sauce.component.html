@@ -4,7 +4,7 @@
   <div class="sauce-info">
     <h1 class="sauce-name">{{ sauce.name }}</h1>
     <p class="manufacturer">par {{ sauce.manufacturer }}</p>
-    <h3>Description</h3>
+    <h3 class="description-title">Description</h3>
     <p [ngStyle]="{ 'white-space': 'pre-wrap' }">{{ sauce.description }}</p>
     <div class="like-buttons" *ngIf="!likePending">
       <div class="likes">
@@ -32,8 +32,8 @@
       <mat-spinner class="white-spinner"></mat-spinner>
     </div>
     <div class="control-buttons">
-      <button mat-raised-button (click)="onBack()">Retour</button>
       <button
+        class="button-modify"
         mat-raised-button
         color="primary"
         (click)="onModify()"
@@ -42,6 +42,7 @@
         Modifier
       </button>
       <button
+        class="button-delete"
         mat-raised-button
         color="warn"
         (click)="onDelete()"

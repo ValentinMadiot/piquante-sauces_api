@@ -32,14 +32,10 @@
     <button mat-raised-button color="primary" (click)="imageInput.click()">
       Ajouter un Image
     </button>
-    <img
-      [src]="imagePreview"
-      *ngIf="imagePreview"
-      style="max-height: 100px; display: block; margin-top: 10px"
-    />
+    <img [src]="imagePreview" *ngIf="imagePreview" class="image-preview" />
   </div>
   <div class="form-group">
-    <label for="main-pepper">Ingrédient Principal (Piment)</label>
+    <label for="main-pepper">Ingrédient Principal</label>
     <input
       type="text"
       class="form-control"
