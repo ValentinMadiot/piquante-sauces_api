@@ -1,7 +1,7 @@
 <mat-spinner *ngIf="loading"></mat-spinner>
 <form [formGroup]="signupForm" *ngIf="!loading">
   <div class="form-group">
-    <label for="email">Email</label>
+    <label for="email">Adresse Email</label>
     <input
       type="email"
       class="form-control"
@@ -10,7 +10,7 @@
     />
   </div>
   <div class="form-group">
-    <label for="password">Password</label>
+    <label for="password">Mot de Passe</label>
     <input
       type="password"
       class="form-control"
@@ -24,7 +24,7 @@
     [disabled]="signupForm.invalid"
     (click)="onSignup()"
   >
-    SIGN UP
+    Créer un Compte
   </button>
   <p class="text-danger" *ngIf="errorMsg">{{ errorMsg }}</p>
 </form>

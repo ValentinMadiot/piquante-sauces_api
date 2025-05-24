@@ -7,7 +7,7 @@
           routerLinkActive="active"
           *ngIf="isAuth$ | async"
         >
-          ALL SAUCES
+          Toutes les Sauces
         </a>
       </li>
       <li>
@@ -16,18 +16,18 @@
           routerLinkActive="active"
           *ngIf="isAuth$ | async"
         >
-          ADD SAUCE
+          Ajouter une Sauce
         </a>
       </li>
     </ul>
   </div>
   <div class="logo">
     <div class="logo-image">
-      <img alt="Flame logo" src="../../assets/images/flame.png" />
+      <img alt="Logo flamme" src="../../assets/images/piment.png" />
     </div>
     <div class="logo-text">
-      <h1>HOT TAKES</h1>
-      <h5>THE WEB'S BEST HOT SAUCE REVIEWS</h5>
+      <h1>Piiquante</h1>
+      <h5>Les Meilleures Sauces Piquantes du Web</h5>
     </div>
   </div>
   <div class="right-nav">
@@ -39,7 +39,7 @@
           *ngIf="!(isAuth$ | async)"
           class="button"
         >
-          SIGN UP
+          Inscription
         </a>
       </li>
       <li>
@@ -48,11 +48,11 @@
           routerLinkActive="active"
           *ngIf="!(isAuth$ | async)"
         >
-          LOGIN
+          Connexion
         </a>
       </li>
       <li>
-        <a (click)="onLogout()" *ngIf="isAuth$ | async"> LOGOUT </a>
+        <a (click)="onLogout()" *ngIf="isAuth$ | async"> Déconnexion </a>
       </li>
     </ul>
   </div>

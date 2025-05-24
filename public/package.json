@@ -1,5 +1,5 @@
 {
-  "name": "hot-takes",
+  "name": "piiquante",
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve --proxy-config src/proxy.conf.json",

@@ -1,9 +1,9 @@
 <mat-spinner *ngIf="loading"></mat-spinner>
 <div class="sauce-container" *ngIf="sauce$ | async as sauce">
-  <img [src]="sauce?.imageUrl" alt="" />
+  <img [src]="sauce.imageUrl" alt="Image de la sauce" loading="lazy" />
   <div class="sauce-info">
-    <h1 class="sauce-name">{{ sauce?.name }}</h1>
-    <p class="manufacturer">by {{ sauce?.manufacturer }}</p>
+    <h1 class="sauce-name">{{ sauce.name }}</h1>
+    <p class="manufacturer">par {{ sauce.manufacturer }}</p>
     <h3>Description</h3>
     <p [ngStyle]="{ 'white-space': 'pre-wrap' }">{{ sauce.description }}</p>
     <div class="like-buttons" *ngIf="!likePending">
@@ -32,14 +32,14 @@
       <mat-spinner class="white-spinner"></mat-spinner>
     </div>
     <div class="control-buttons">
-      <button mat-raised-button (click)="onBack()">BACK</button>
+      <button mat-raised-button (click)="onBack()">Retour</button>
       <button
         mat-raised-button
         color="primary"
         (click)="onModify()"
         *ngIf="userId === sauce.userId"
       >
-        MODIFY
+        Modifier
       </button>
       <button
         mat-raised-button
@@ -47,7 +47,7 @@
         (click)="onDelete()"
         *ngIf="userId === sauce.userId"
       >
-        DELETE
+        Supprimer
       </button>
     </div>
   </div>
