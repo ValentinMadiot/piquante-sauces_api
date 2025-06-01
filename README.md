@@ -12,7 +12,7 @@
 &nbsp;&nbsp;&nbsp; 🎨 &nbsp; [**Introduction**](#introduction)<br />
 &nbsp;&nbsp;&nbsp; 🛠️ &nbsp; [**Technologies**](#technologies)<br />
 &nbsp;&nbsp;&nbsp; 🎯 &nbsp; [**Fonctionnalités**](#fonctionnalités)<br />
-&nbsp;&nbsp;&nbsp; 🚧 &nbsp; [**Mise à Jour & Déploiement**](#upgrade)<br />
+&nbsp;&nbsp;&nbsp; 🚧 &nbsp; [**Mise à Jour**](#upgrade)<br />
 &nbsp;&nbsp;&nbsp; 🚀 &nbsp; [**Installation**](#installation)
 
 ## <br /> <a name="introduction">🎨 Introduction</a>
@@ -76,9 +76,7 @@ git clone https://github.com/ValentinMadiot/piquante-sauces_api.git
 
 #### Backend (API)
 
-```bash
-cp api/.env.example api/.env
-```
+Renommer `.env.exemple` en `.env`
 
 ```env
 # IDENTIFIANT BASE DE DONNEES (MongoDB)
