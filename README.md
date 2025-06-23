@@ -17,26 +17,27 @@
 
 ## <br /> <a name="introduction">🎨 Introduction</a>
 
-Ce projet consiste en une application de partage de sauces piquantes, avec un backend **Node.js/Express** connecté à **MongoDB** pour gérer les utilisateurs et les sauces, et un frontend **Angular** pour une interface moderne et réactive.
+Piquante est une application web fullstack dédiée au partage de sauces piquantes.
 
-- Le **backend** expose une API REST pour la création, la lecture, la mise à jour, la suppression (CRUD) de sauces, ainsi que l'authentification (signup/login) et la gestion des likes/dislikes.
-- Le **frontend** Angular consomme cette API, affiche dynamiquement les sauces, permet l'upload d'images et la navigation.
+Elle repose sur un backend **Node.js** / **Express** connecté à **MongoDB**, et un frontend **Angular** moderne et responsive.
 
-📂 Pour plus de détails, consultez le [dossier](.docs/).
+Les utilisateurs peuvent s’inscrire, publier des sauces, voter (like/dislike), et gérer leurs propres créations via une API REST sécurisée.
+
+> 📂 Pour plus de détails, consultez le [dossier](.docs/).
 
 ## <br /> <a name="technologies">🛠️ Technologies</a>
 
-- **Backend** : Node.js, Express, Mongoose (MongoDB), bcrypt, JSON Web Token (JWT)
+- **Backend** : Node.js, Express, Mongoose, bcrypt, JSON Web Token (JWT)
 - **Frontend** : Angular, RxJS
-- **Base de données** : MongoDB (via MongoDB Atlas ou MongoDB Compass local)
-- **Déploiement** : Render (backend), Vercel (frontend)
+- **Base de données** : MongoDB Atlas ou MongoDB Compass local
+- **Déploiement** : Render (API), Vercel (UI)
+- **Image hosting** : Cloudinary
 
 ## <br /> <a name="fonctionnalités">🎯 Fonctionnalités</a>
 
 - **Inscription / Connexion** : Gestion sécurisée des utilisateurs avec hash bcrypt et JWT
 - **CRUD Sauces** : Création, lecture, modification, suppression de sauces avec upload d'image
 - **Like / Dislike** : Système de notation des sauces par les utilisateurs
-- **Upload d’images** : Ajout et affichage dynamique des images
 - **Routes protégées** : Accès contrôlé via token JWT
 - **Responsive design** : Optimisé pour desktop & mobile
 - **Messages d’erreur explicites** : Feedbacks utilisateur améliorés
@@ -59,12 +60,15 @@ Afin de rendre le projet déployable en production, plusieurs ajustements ont é
 
 ## <br /> <a name="installation">🚀 Installation</a>
 
-### ✅ Pré-requis
+### ✅ Prérequis
 
-- 🛠️ **[Git](https://git-scm.com/)**
-- 🔧 **[Node.js](https://nodejs.org/fr/)**
-- 📦 **[npm](https://www.npmjs.com/)**
-- 🍃 **[MongoDB](https://www.mongodb.com/)** (Atlas ou local)
+- [Git](https://git-scm.com/) &nbsp;—&nbsp; Système de gestion de versions
+- [Node.js](https://nodejs.org/fr) &nbsp;—&nbsp; Exécuteur local de scripts JavaScript
+- [npm](https://www.npmjs.com/) &nbsp;—&nbsp; Gestionnaire de paquets JavaScript
+- [MongoDB](https://www.mongodb.com/) — Base de données NoSQL
+- [Google Chrome](https://www.google.com/) &nbsp;—&nbsp; Navigateur moderne
+- [Visual Studio Code](https://code.visualstudio.com/) &nbsp;—&nbsp; Éditeur de code
+- [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) &nbsp;—&nbsp; Extension VS Code
 
 ### 📥 Cloner le projet
 
@@ -72,24 +76,24 @@ Afin de rendre le projet déployable en production, plusieurs ajustements ont é
 git clone https://github.com/ValentinMadiot/piquante-sauces_api.git
 ```
 
-### 📝 Configuration des variables d’environnement
-
-#### Backend (API)
+### 📝 Configuration de l’environnement
 
 Renommer `.env.exemple` en `.env`
 
-```env
+Ajoutez les variables d’environnement dans le fichier `.env` :
+
+```bash
 # IDENTIFIANT BASE DE DONNEES (MongoDB)
-MONGODB_URI_DEV=
-MONGODB_URI_PROD=
+MONGODB_URI_DEV=mongodb://localhost:00000/piquante
+MONGODB_URI_PROD=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
 
 # PASSWORD JWT (JSON Web Token)
-JWT_TOKEN=
+JWT_TOKEN=mon_secret_token
 ```
 
-### ▶️ Lancer l’application
+### ▶️ Lancer le projet
 
-#### Backend (port : 8080)
+#### Backend
 
 ```bash
 cd api
@@ -97,10 +101,14 @@ npm install
 npm start
 ```
 
-#### Frontend (port : 4200)
+Backend disponible sur : `http://localhost:8080`
+
+#### Frontend
 
 ```bash
 cd public
 npm install
 npm start
 ```
+
+Frontend disponible sur : `http://localhost:4200`
