@@ -19,7 +19,7 @@
 
 Piquante est une application web fullstack dédiée au partage de sauces piquantes.
 
-Elle repose sur un backend **Node.js** / **Express** connecté à **MongoDB**, et un frontend **Angular** moderne et responsive.
+Basée sur un backend **Node.js** / **Express** connecté à **MongoDB**, et un frontend **Angular** moderne et responsive.
 
 Les utilisateurs peuvent s’inscrire, publier des sauces, voter (like/dislike), et gérer leurs propres créations via une API REST sécurisée.
 
@@ -35,28 +35,22 @@ Les utilisateurs peuvent s’inscrire, publier des sauces, voter (like/dislike),
 
 ## <br /> <a name="fonctionnalités">🎯 Fonctionnalités</a>
 
-- **Inscription / Connexion** : Gestion sécurisée des utilisateurs avec hash bcrypt et JWT
-- **CRUD Sauces** : Création, lecture, modification, suppression de sauces avec upload d'image
-- **Like / Dislike** : Système de notation des sauces par les utilisateurs
-- **Routes protégées** : Accès contrôlé via token JWT
-- **Responsive design** : Optimisé pour desktop & mobile
-- **Messages d’erreur explicites** : Feedbacks utilisateur améliorés
-- **Upload d’images** : Hébergement des images avec Cloudinary
+- Authentification sécurisée (bcrypt + JWT)
+- CRUD complet sur les sauces avec image
+- Upload intelligent : local (dev) / Cloudinary (prod)
+- Like / Dislike par utilisateur unique
+- API REST sécurisée via JWT
+- Interface Angular responsive
+- Affichage des erreurs serveur côté client
 
 ## <br /> <a name="upgrade">🚧 Mise à Jour</a>
 
-Afin de rendre le projet déployable en production, plusieurs ajustements ont été apportés :
-
-- **Cloudinary** a été intégré pour gérer efficacement l'hébergement et la livraison des images (compression, CDN, nettoyage automatique des fichiers inutiles)
-- **Nouvelle gestion des erreurs** backend & frontend, avec feedback utilisateur
-- **Détection automatique de l’environnement** (dev / prod)
-- **Stockage intelligent d’authentification** (localStorage avec persistance)
-- **Favicon & logo personnalisés**
-- **Refonte graphique complète** pour desktop et mobile
-- **Organisation** : séparation claire des dossiers `api/` pour le backend et `public/` pour le frontend
-- **Déploiement** :
-  - Backend sur **Render** (URL : `https://piquante-sauces-api.onrender.com`)
-  - Frontend sur **Vercel** (URL : `https://piquante-sauces.vercel.app`)
+- Hébergement d’images via Cloudinary (CDN, compression, nettoyage automatique)
+- Détection automatique de l’environnement : dev ou prod
+- Gestion des erreurs enrichie côté client & serveur
+- Upload intelligent : local en développement, Cloudinary en production
+- Refactor : structure `api/` (backend) et `public/` (frontend)
+- Déploiement performant via [**Render**](https://piquante-sauces-api.onrender.com) (API) & [**Vercel**](https://piquante-sauces.vercel.app) (UI)
 
 ## <br /> <a name="installation">🚀 Installation</a>
 
@@ -65,18 +59,23 @@ Afin de rendre le projet déployable en production, plusieurs ajustements ont é
 - [Git](https://git-scm.com/) &nbsp;—&nbsp; Système de gestion de versions
 - [Node.js](https://nodejs.org/fr) &nbsp;—&nbsp; Exécuteur local de scripts JavaScript
 - [npm](https://www.npmjs.com/) &nbsp;—&nbsp; Gestionnaire de paquets JavaScript
-- [MongoDB](https://www.mongodb.com/) — Base de données NoSQL
+- [MongoDB](https://www.mongodb.com/) &nbsp;—&nbsp; Base de données NoSQL
 - [Google Chrome](https://www.google.com/) &nbsp;—&nbsp; Navigateur moderne
 - [Visual Studio Code](https://code.visualstudio.com/) &nbsp;—&nbsp; Éditeur de code
-- [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) &nbsp;—&nbsp; Extension VS Code
+- [Render](https://render.com/) &nbsp;—&nbsp; Déploiement de l’API en production
+- [Cloudinary](https://cloudinary.com/) &nbsp;—&nbsp; Hébergement et optimisation des images
+- [Vercel](https://vercel.com/home) &nbsp;—&nbsp; Déploiement du frontend en production
 
 ### 📥 Cloner le projet
 
 ```bash
-git clone https://github.com/ValentinMadiot/piquante-sauces_api.git
+git clone https://github.com/ValentinMadiot/piquante-sauces_api
+cd piquante-sauces_api
 ```
 
 ### 📝 Configuration de l’environnement
+
+#### 1. DEVELOPPEMENT (Local)
 
 Renommer `.env.exemple` en `.env`
 
@@ -84,11 +83,42 @@ Ajoutez les variables d’environnement dans le fichier `.env` :
 
 ```bash
 # IDENTIFIANT BASE DE DONNEES (MongoDB)
-MONGODB_URI_DEV=mongodb://localhost:00000/piquante
+MONGODB_URI_DEV=mongodb://localhost:27017/piquante
+
+# PASSWORD JWT (JSON Web Token)
+JWT_TOKEN=mon_secret_token
+
+# ENVIRONNEMENT D'EXÉCUTION (dev = Stockage Local)
+NODE_ENV=development
+```
+
+#### 2.1 PRODUCTION (Render)
+
+Ajoutez les variables d’environnement sur Render :
+
+```bash
+# IDENTIFIANT BASE DE DONNEES (MongoDB)
 MONGODB_URI_PROD=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
 
 # PASSWORD JWT (JSON Web Token)
 JWT_TOKEN=mon_secret_token
+
+# ENVIRONNEMENT D'EXÉCUTION (prod = Cloudinary)
+NODE_ENV=production
+
+# IDENTIFIANT CLOUDINARY
+CLOUD_API_KEY=ma_clef_api
+CLOUD_API_SECRET=mon_api_secrete
+CLOUD_NAME=mon_nom_de_stoquage
+```
+
+2.2 FRONTEND (Vercel)
+
+Ajoutez les variables d’environnement sur Vercel :
+
+```bash
+# URL RENDER
+API_URL=https://nom_projet.onrender.com/api
 ```
 
 ### ▶️ Lancer le projet

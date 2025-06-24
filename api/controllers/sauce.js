@@ -1,5 +1,7 @@
 //* CLOUDINARY CONFIGUE
 const Sauce = require("../models/Sauce");
+const fs = require("fs");
+const isProd = process.env.NODE_ENV === "production";
 
 // GET ALL
 function getAllSauces(req, res, next) {
@@ -20,10 +22,14 @@ function createSauce(req, res, next) {
   const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject.userId;
 
+  const imageUrl = isProd
+    ? req.file.path
+    : `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+
   const sauce = new Sauce({
     ...sauceObject,
     userId: req.auth.userId,
-    imageUrl: req.file.path, // ← URL Cloudinary
+    imageUrl,
     likes: 0,
     dislikes: 0,
     usersLiked: [],
@@ -41,7 +47,9 @@ function modifySauce(req, res, next) {
   const sauceObject = req.file
     ? {
         ...JSON.parse(req.body.sauce),
-        imageUrl: req.file.path, // ← URL Cloudinary
+        imageUrl: isProd
+          ? req.file.path
+          : `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
       }
     : { ...req.body };
 
@@ -50,16 +58,21 @@ function modifySauce(req, res, next) {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (sauce.userId != req.auth.userId) {
-        res.status(401).json({ message: "Non-autorisé" });
-      } else {
-        // PAS besoin de fs.unlink, Cloudinary gère le nettoyage via API
-        Sauce.updateOne(
-          { _id: req.params.id },
-          { ...sauceObject, _id: req.params.id }
-        )
-          .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
-          .catch((error) => res.status(401).json({ error }));
+        return res.status(401).json({ message: "Non-autorisé" });
       }
+
+      // Suppression de l'ancienne image uniquement en local
+      if (!isProd && req.file) {
+        const filename = sauce.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, (err) => {
+          if (err) console.error("Erreur suppression image :", err);
+        });
+      }
+
+      return Sauce.updateOne(
+        { _id: req.params.id },
+        { ...sauceObject, _id: req.params.id }
+      ).then(() => res.status(200).json({ message: "Sauce modifiée !" }));
     })
     .catch((error) => res.status(400).json({ error }));
 }
@@ -69,13 +82,20 @@ function deleteSauce(req, res, next) {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (sauce.userId != req.auth.userId) {
-        res.status(401).json({ message: "Non-autorisé" });
-      } else {
-        // Supprimer la sauce (Cloudinary : nettoyage manuel possible avec public_id si besoin)
-        Sauce.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
-          .catch((error) => res.status(400).json({ error }));
+        return res.status(401).json({ message: "Non-autorisé" });
       }
+
+      // Suppression image en local uniquement
+      if (!isProd) {
+        const filename = sauce.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, (err) => {
+          if (err) console.error("Erreur suppression image :", err);
+        });
+      }
+
+      return Sauce.deleteOne({ _id: req.params.id }).then(() =>
+        res.status(200).json({ message: "Sauce supprimée !" })
+      );
     })
     .catch((error) => res.status(500).json({ error }));
 }
@@ -87,7 +107,7 @@ function likeDislikeSauce(req, res, next) {
   const sauceId = req.params.id;
 
   if (like === 1) {
-    Sauce.updateOne(
+    return Sauce.updateOne(
       { _id: sauceId },
       { $push: { usersLiked: userId }, $inc: { likes: 1 } }
     )
@@ -96,7 +116,7 @@ function likeDislikeSauce(req, res, next) {
   }
 
   if (like === -1) {
-    Sauce.updateOne(
+    return Sauce.updateOne(
       { _id: sauceId },
       { $push: { usersDisliked: userId }, $inc: { dislikes: 1 } }
     )
@@ -105,25 +125,23 @@ function likeDislikeSauce(req, res, next) {
   }
 
   if (like === 0) {
-    Sauce.findOne({ _id: sauceId })
+    return Sauce.findOne({ _id: sauceId })
       .then((sauce) => {
         if (sauce.usersLiked.includes(userId)) {
-          Sauce.updateOne(
+          return Sauce.updateOne(
             { _id: sauceId },
             { $pull: { usersLiked: userId }, $inc: { likes: -1 } }
-          )
-            .then(() => res.status(200).json({ message: "-1 like" }))
-            .catch((error) => res.status(400).json({ error }));
+          ).then(() => res.status(200).json({ message: "-1 like" }));
         }
 
         if (sauce.usersDisliked.includes(userId)) {
-          Sauce.updateOne(
+          return Sauce.updateOne(
             { _id: sauceId },
             { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } }
-          )
-            .then(() => res.status(200).json({ message: "-1 dislike" }))
-            .catch((error) => res.status(400).json({ error }));
+          ).then(() => res.status(200).json({ message: "-1 dislike" }));
         }
+
+        return res.status(200).json({ message: "Aucun changement" });
       })
       .catch((error) => res.status(404).json({ error }));
   }
