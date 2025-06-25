@@ -98,7 +98,7 @@ Ajoutez les variables d’environnement sur Render :
 
 ```bash
 # IDENTIFIANT BASE DE DONNEES (MongoDB)
-MONGODB_URI_PROD=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
+MONGODB_URI_PROD=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase...
 
 # PASSWORD JWT (JSON Web Token)
 JWT_TOKEN=secret_token
