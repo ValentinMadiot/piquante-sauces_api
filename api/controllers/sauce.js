@@ -1,6 +1,7 @@
 //* CLOUDINARY CONFIGUE
 const Sauce = require("../models/Sauce");
 const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 const isProd = process.env.NODE_ENV === "production";
 
 // GET ALL
@@ -61,12 +62,27 @@ function modifySauce(req, res, next) {
         return res.status(401).json({ message: "Non-autorisé" });
       }
 
-      // Suppression de l'ancienne image uniquement en local
-      if (!isProd && req.file) {
-        const filename = sauce.imageUrl.split("/images/")[1];
-        fs.unlink(`images/${filename}`, (err) => {
-          if (err) console.error("Erreur suppression image :", err);
-        });
+      // Suppression de l’ancienne image si une nouvelle est uploadée
+      if (req.file) {
+        if (isProd) {
+          // Supprimer l’ancienne image Cloudinary
+          const parts = sauce.imageUrl.split("/");
+          const filename = parts[parts.length - 1].split(".")[0]; // ex: sauce_1718031371
+          const publicId = `piquante-sauces/${filename}`;
+
+          cloudinary.uploader
+            .destroy(publicId)
+            .then(() =>
+              console.log("✅ Ancienne image supprimée de Cloudinary")
+            )
+            .catch((err) => console.error("❌ Cloudinary error:", err));
+        } else {
+          // Supprimer l’image locale
+          const filename = sauce.imageUrl.split("/images/")[1];
+          fs.unlink(`images/${filename}`, (err) => {
+            if (err) console.error("❌ Erreur suppression image locale :", err);
+          });
+        }
       }
 
       return Sauce.updateOne(
@@ -85,17 +101,35 @@ function deleteSauce(req, res, next) {
         return res.status(401).json({ message: "Non-autorisé" });
       }
 
-      // Suppression image en local uniquement
-      if (!isProd) {
+      const deleteSauceFromDB = () =>
+        Sauce.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
+          .catch((error) => res.status(400).json({ error }));
+
+      if (isProd) {
+        // Supprimer l'image sur Cloudinary
+        const parts = sauce.imageUrl.split("/");
+        const filename = parts[parts.length - 1].split(".")[0]; // ex: sauce_1718031371
+        const publicId = `piquante-sauces/${filename}`;
+
+        cloudinary.uploader
+          .destroy(publicId)
+          .then(() => {
+            console.log("✅ Image supprimée de Cloudinary");
+            deleteSauceFromDB();
+          })
+          .catch((err) => {
+            console.error("❌ Erreur Cloudinary :", err);
+            deleteSauceFromDB(); // continue même si erreur image
+          });
+      } else {
+        // Supprimer l'image locale
         const filename = sauce.imageUrl.split("/images/")[1];
         fs.unlink(`images/${filename}`, (err) => {
-          if (err) console.error("Erreur suppression image :", err);
+          if (err) console.error("❌ Erreur suppression image locale :", err);
+          deleteSauceFromDB();
         });
       }
-
-      return Sauce.deleteOne({ _id: req.params.id }).then(() =>
-        res.status(200).json({ message: "Sauce supprimée !" })
-      );
     })
     .catch((error) => res.status(500).json({ error }));
 }

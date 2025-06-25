@@ -37,8 +37,8 @@ app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 // 6) Routes API
-app.use("/api", userRoute);
-app.use("/api", sauceRoute);
+app.use("/", userRoute);
+app.use("/", sauceRoute);
 
 // 7) Middleware d’Erreurs Global
 app.use((err, req, res, next) => {

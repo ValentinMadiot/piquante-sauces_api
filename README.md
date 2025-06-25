@@ -77,7 +77,7 @@ cd piquante-sauces_api
 
 #### 1. DEVELOPPEMENT (Local)
 
-Renommer `.env.exemple` en `.env`
+Renommer `.env.exemple` en `.env` dans `./api`
 
 Ajoutez les variables d’environnement dans le fichier `.env` :
 
@@ -86,7 +86,7 @@ Ajoutez les variables d’environnement dans le fichier `.env` :
 MONGODB_URI_DEV=mongodb://localhost:27017/piquante
 
 # PASSWORD JWT (JSON Web Token)
-JWT_TOKEN=mon_secret_token
+JWT_TOKEN=secret_token
 
 # ENVIRONNEMENT D'EXÉCUTION (dev = Stockage Local)
 NODE_ENV=development
@@ -101,24 +101,24 @@ Ajoutez les variables d’environnement sur Render :
 MONGODB_URI_PROD=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
 
 # PASSWORD JWT (JSON Web Token)
-JWT_TOKEN=mon_secret_token
+JWT_TOKEN=secret_token
 
 # ENVIRONNEMENT D'EXÉCUTION (prod = Cloudinary)
 NODE_ENV=production
 
 # IDENTIFIANT CLOUDINARY
-CLOUD_API_KEY=ma_clef_api
-CLOUD_API_SECRET=mon_api_secrete
-CLOUD_NAME=mon_nom_de_stoquage
+CLOUD_API_KEY=clef_api
+CLOUD_API_SECRET=api_secrete
+CLOUD_NAME=nom_du_stockage
 ```
 
-2.2 FRONTEND (Vercel)
+#### 2.2 FRONTEND (Vercel)
 
 Ajoutez les variables d’environnement sur Vercel :
 
 ```bash
 # URL RENDER
-API_URL=https://nom_projet.onrender.com/api
+API_URL=https://nom_projet.onrender.com
 ```
 
 ### ▶️ Lancer le projet

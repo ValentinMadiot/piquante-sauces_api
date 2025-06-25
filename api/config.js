@@ -1,9 +1,8 @@
 const port = process.env.PORT || 8080;
 
-const errorHandler = (server, error) => {
+const errorHandler = (error) => {
   if (error.syscall !== "listen") throw error;
 
-  const address = server.address();
   const bind = typeof address === "string" ? `pipe ${address}` : `port ${port}`;
 
   const messages = {
